@@ -1,0 +1,4 @@
+repository "ImmuniPlay/MyAndroidApp@18968379713449@cloud"
+  path "/"
+    br "/main"
+    co "/main"
