@@ -10,6 +10,8 @@ public class DragLeftOnly : MonoBehaviour, IDragHandler
 
     float startX;
 
+    bool hasTriggered = false;
+
     void Start()
     {
         startX = rectTransform.anchoredPosition.x;
@@ -17,6 +19,9 @@ public class DragLeftOnly : MonoBehaviour, IDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (hasTriggered)
+            return;
+
         Vector2 pos = rectTransform.anchoredPosition;
 
         // Move only LEFT
@@ -27,9 +32,11 @@ public class DragLeftOnly : MonoBehaviour, IDragHandler
 
         rectTransform.anchoredPosition = pos;
 
-        // If dragged far enough left
-        if (pos.x <= -500f)
+        // Trigger only ONCE
+        if (pos.x <= -200f)
         {
+            hasTriggered = true;
+
             sceneFade.FadeToScene(nextScene);
         }
     }
