@@ -26,6 +26,32 @@ jobs:
           restore-keys: |
             Library-Android-
 
+      - name: Debug Workspace
+        shell: powershell
+        run: |
+          Write-Host "========== GITHUB WORKSPACE =========="
+          Write-Host $env:GITHUB_WORKSPACE
+          Write-Host ""
+
+          Write-Host "========== ROOT FILES =========="
+          Get-ChildItem $env:GITHUB_WORKSPACE -Force
+
+          Write-Host ""
+          Write-Host "========== ASSETS =========="
+          if (Test-Path "$env:GITHUB_WORKSPACE\Assets") {
+            Get-ChildItem "$env:GITHUB_WORKSPACE\Assets"
+          } else {
+            Write-Host "Assets folder NOT FOUND!"
+          }
+
+          Write-Host ""
+          Write-Host "========== PACKAGES =========="
+          if (Test-Path "$env:GITHUB_WORKSPACE\Packages") {
+            Get-ChildItem "$env:GITHUB_WORKSPACE\Packages"
+          } else {
+            Write-Host "Packages folder NOT FOUND!"
+          }
+
       - name: Build APK
         shell: powershell
         run: |
@@ -43,7 +69,11 @@ jobs:
             -logFile build.log
 
           if ($LASTEXITCODE -ne 0) {
-            Get-Content build.log
+            if (Test-Path build.log) {
+              Get-Content build.log
+            } else {
+              Write-Host "build.log not found."
+            }
             throw "Unity build failed."
           }
 
@@ -55,6 +85,7 @@ jobs:
           path: build.log
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ImmuniPlay-APK
