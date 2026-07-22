@@ -24,6 +24,9 @@ public class NurseStory : MonoBehaviour
     public SceneFade fadeManager;
     public string nextScene = "Scene5";
 
+    [Header("Objects To Hide After Dialogue")]
+    public GameObject[] objectsToHide;
+
     private int step = -1;
     private bool isTyping = false;
     private string currentDialogue;
@@ -38,7 +41,28 @@ public class NurseStory : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // If currently typing, finish instantly
+            // Ignore input if it's on a UI Button (like the Eye Button)
+            if (UnityEngine.EventSystems.EventSystem.current != null)
+            {
+                var pointerData = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current)
+                {
+                    position = Input.mousePosition
+                };
+                var results = new System.Collections.Generic.List<UnityEngine.EventSystems.RaycastResult>();
+                UnityEngine.EventSystems.EventSystem.current.RaycastAll(pointerData, results);
+                bool clickedButton = false;
+                foreach (var result in results)
+                {
+                    if (result.gameObject.GetComponentInParent<UnityEngine.UI.Button>() != null)
+                    {
+                        clickedButton = true;
+                        break;
+                    }
+                }
+                if (clickedButton) return;
+            }
+
+            // Finish typing instantly
             if (isTyping)
             {
                 StopAllCoroutines();
@@ -61,12 +85,27 @@ public class NurseStory : MonoBehaviour
     {
         step++;
 
+        // End of dialogue
         if (step >= dialogues.Length)
         {
+            // Hide chat bubbles
+            nurseBubble.SetActive(false);
+            bottomDialogue.SetActive(false);
+
+            // Hide any additional objects
+            foreach (GameObject obj in objectsToHide)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
+
+            // Change scene
             if (fadeManager != null)
             {
                 fadeManager.FadeToScene(nextScene);
             }
+
+            enabled = false;
             return;
         }
 

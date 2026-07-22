@@ -1,35 +1,61 @@
 name: Build Android APK
 
 on:
+  push:
+    branches:
+      - main
+
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build Android
-    runs-on: ubuntu-latest
+    name: Build Android APK
+    runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           lfs: true
 
-      - uses: actions/cache@v4
+      - name: Cache Library
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-Android-
 
-      - name: Build Project
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      - name: Build APK
+        shell: powershell
+        run: |
+          $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1\Editor\Unity.exe"
+
+          if (!(Test-Path $unity)) {
+            throw "Unity not found: $unity"
+          }
+
+          & $unity `
+            -batchmode `
+            -quit `
+            -projectPath "${{ github.workspace }}" `
+            -executeMethod BuildScript.BuildAndroid `
+            -logFile build.log
+
+          if ($LASTEXITCODE -ne 0) {
+            Get-Content build.log
+            throw "Unity build failed."
+          }
+
+      - name: Upload Build Log
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          unityVersion: 6000.3.8f1
-          targetPlatform: Android
+          name: Build-Log
+          path: build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ImmuniPlay-APK
-          path: build
+          path: build/ImmuniPlay.apk

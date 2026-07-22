@@ -62,13 +62,22 @@ public class StartWalkSequence : MonoBehaviour
         walkingRect.anchoredPosition +=
             Vector2.left * moveSpeed * Time.deltaTime;
 
-        // Check distance to endpoint
-        float distance = Vector3.Distance(
-            walkingRect.position,
-            endpoint.position);
+        // Check distance to endpoint in Canvas space
+        Canvas canvas = walkingRect.GetComponentInParent<Canvas>();
+        float distance;
+        if (canvas != null)
+        {
+            Vector3 localWalkingPos = canvas.transform.InverseTransformPoint(walkingRect.position);
+            Vector3 localEndpointPos = canvas.transform.InverseTransformPoint(endpoint.position);
+            distance = Vector3.Distance(localWalkingPos, localEndpointPos);
+        }
+        else
+        {
+            distance = Vector3.Distance(walkingRect.position, endpoint.position);
+        }
 
         // Debug
-        Debug.Log("Distance: " + distance);
+        Debug.Log("Canvas Distance: " + distance + " (threshold: 100)");
 
         if (distance < 100f)
         {

@@ -17,6 +17,11 @@ public class TiltWeightGame : MonoBehaviour
 
     public TMP_Text timerText;
 
+    [Header("Verify Zones (Invisible Images)")]
+    public RectTransform belowZone;
+    public RectTransform healthyZone;
+    public RectTransform aboveZone;
+
     [Header("Result Panels")]
     public GameObject belowPanel;
     public GameObject healthyPanel;
@@ -31,9 +36,17 @@ public class TiltWeightGame : MonoBehaviour
 
         currentTime = gameTime;
 
-        belowPanel.SetActive(false);
-        healthyPanel.SetActive(false);
-        abovePanel.SetActive(false);
+        if (belowPanel != null)
+            belowPanel.SetActive(false);
+
+        if (healthyPanel != null)
+            healthyPanel.SetActive(false);
+
+        if (abovePanel != null)
+            abovePanel.SetActive(false);
+
+        if (timerText != null)
+            timerText.text = Mathf.Ceil(currentTime).ToString();
     }
 
     void Update()
@@ -49,19 +62,17 @@ public class TiltWeightGame : MonoBehaviour
 
         // Move selector
         Vector2 pos = rect.anchoredPosition;
-
         pos.x += tilt * tiltSpeed * Time.deltaTime;
-
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
-
         rect.anchoredPosition = pos;
 
-        // Timer
+        // Countdown
         currentTime -= Time.deltaTime;
 
-        timerText.text = Mathf.Ceil(currentTime).ToString();
+        if (timerText != null)
+            timerText.text = Mathf.Ceil(Mathf.Max(currentTime, 0)).ToString();
 
-        if (currentTime <= 0)
+        if (currentTime <= 0f)
         {
             EndGame();
         }
@@ -72,24 +83,43 @@ public class TiltWeightGame : MonoBehaviour
         gameEnded = true;
         canTilt = false;
 
-        timerText.text = "0";
+        if (timerText != null)
+            timerText.text = "0";
 
-        float finalX = rect.anchoredPosition.x;
-
-        // BELOW
-        if (finalX < 180f)
+        if (IsInside(belowZone))
         {
-            belowPanel.SetActive(true);
+            if (belowPanel != null)
+                belowPanel.SetActive(true);
         }
-        // HEALTHY
-        else if (finalX >= 180f && finalX <= 350f)
+        else if (IsInside(healthyZone))
         {
-            healthyPanel.SetActive(true);
+            if (healthyPanel != null)
+                healthyPanel.SetActive(true);
         }
-        // ABOVE
+        else if (IsInside(aboveZone))
+        {
+            if (abovePanel != null)
+                abovePanel.SetActive(true);
+        }
         else
         {
-            abovePanel.SetActive(true);
+            Debug.LogWarning("Selector is not inside any verify zone.");
         }
+    }
+
+    bool IsInside(RectTransform zone)
+    {
+        if (zone == null)
+            return false;
+
+        Vector3[] corners = new Vector3[4];
+        zone.GetWorldCorners(corners);
+
+        Vector3 selectorPos = rect.position;
+
+        return selectorPos.x >= corners[0].x &&
+               selectorPos.x <= corners[2].x &&
+               selectorPos.y >= corners[0].y &&
+               selectorPos.y <= corners[2].y;
     }
 }

@@ -15,6 +15,8 @@ public class HeartbeatGameManager : MonoBehaviour
     [Header("UI")]
     public TMP_Text feedbackText;
     public TMP_Text progressText;
+    public GameObject resultPanel;
+    public TMP_Text resultScoreText;
 
     private GameObject currentHeart;
 
@@ -30,8 +32,25 @@ public class HeartbeatGameManager : MonoBehaviour
     {
         if (currentHeartNumber >= totalHearts)
         {
-            progressText.text = "10/10";
-            feedbackText.text = "CHECKUP COMPLETE!";
+            if (progressText != null) progressText.text = totalHearts + "/" + totalHearts;
+            if (feedbackText != null) feedbackText.text = "CHECKUP COMPLETE!";
+            
+            if (resultPanel != null)
+            {
+                resultPanel.SetActive(true);
+                if (resultScoreText != null && ScoreManager.Instance != null)
+                {
+                    resultScoreText.text = "Final Score: " + Mathf.FloorToInt(ScoreManager.Instance.score) + "%";
+                }
+            }
+
+            // Execute the branching transition based on score
+            HeartbeatMinigameCondition condition = GetComponent<HeartbeatMinigameCondition>();
+            if (condition != null)
+            {
+                condition.ExecuteTransition();
+            }
+
             return;
         }
 
@@ -60,8 +79,11 @@ public class HeartbeatGameManager : MonoBehaviour
 
         currentHeartNumber++;
 
-        progressText.text =
-            currentHeartNumber + "/" + totalHearts;
+        if (progressText != null)
+        {
+            progressText.text =
+                currentHeartNumber + "/" + totalHearts;
+        }
     }
 
     public void TapHeart()
@@ -80,15 +102,17 @@ public class HeartbeatGameManager : MonoBehaviour
 
         if (distance <= 50)
         {
-            feedbackText.text = "PERFECT!";
+            if (feedbackText != null) feedbackText.text = "PERFECT!";
+            if (ScoreManager.Instance != null) ScoreManager.Instance.AddScore(10);
         }
         else if (distance <= 120)
         {
-            feedbackText.text = "GOOD!";
+            if (feedbackText != null) feedbackText.text = "GOOD!";
+            if (ScoreManager.Instance != null) ScoreManager.Instance.AddScore(7);
         }
         else
         {
-            feedbackText.text = "MISS!";
+            if (feedbackText != null) feedbackText.text = "MISS!";
         }
 
         Destroy(currentHeart);
@@ -100,7 +124,7 @@ public class HeartbeatGameManager : MonoBehaviour
 
     public void HeartMissed()
     {
-        feedbackText.text = "MISS!";
+        if (feedbackText != null) feedbackText.text = "MISS!";
 
         currentHeart = null;
 

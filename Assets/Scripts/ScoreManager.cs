@@ -22,6 +22,7 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(float points)
     {
         score += points;
+        score = Mathf.Clamp(score, 0, 100);
 
         UpdateScoreUI();
 
@@ -30,6 +31,9 @@ public class ScoreManager : MonoBehaviour
 
     void UpdateScoreUI()
     {
-        scoreText.text = "Score: " + score;
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + Mathf.FloorToInt(score) + "%";
+        }
     }
 }
