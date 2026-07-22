@@ -13,11 +13,17 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      #=========================================
+      # Checkout
+      #=========================================
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           lfs: true
 
+      #=========================================
+      # Cache Unity Library
+      #=========================================
       - name: Cache Library
         uses: actions/cache@v4
         with:
@@ -26,6 +32,9 @@ jobs:
           restore-keys: |
             Library-Android-
 
+      #=========================================
+      # Debug Workspace
+      #=========================================
       - name: Debug Workspace
         shell: powershell
         run: |
@@ -52,7 +61,10 @@ jobs:
             Write-Host "Packages folder NOT FOUND!"
           }
 
-      - name: Build APK
+      #=========================================
+      # Check Unity Installation
+      #=========================================
+      - name: Check Unity Installation
         shell: powershell
         run: |
           $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1\Editor\Unity.exe"
@@ -61,29 +73,42 @@ jobs:
             throw "Unity not found: $unity"
           }
 
+          Write-Host "Unity Found:"
+          Get-Item $unity
+
+          Write-Host ""
+          Write-Host "Unity Version:"
+          & $unity -version
+
+      #=========================================
+      # Build APK
+      #=========================================
+      - name: Build APK
+        shell: powershell
+        run: |
+          $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1\Editor\Unity.exe"
+
+          Write-Host ""
+          Write-Host "========== STARTING UNITY BUILD =========="
+
           & $unity `
             -batchmode `
-            -quit `
             -projectPath "${{ github.workspace }}" `
             -executeMethod BuildScript.BuildAndroid `
-            -logFile build.log
+            -logFile -
 
-          if ($LASTEXITCODE -ne 0) {
-            if (Test-Path build.log) {
-              Get-Content build.log
-            } else {
-              Write-Host "build.log not found."
-            }
-            throw "Unity build failed."
-          }
+          $exitCode = $LASTEXITCODE
 
-      - name: Upload Build Log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Build-Log
-          path: build.log
+          Write-Host ""
+          Write-Host "=========================================="
+          Write-Host "Unity Exit Code: $exitCode"
+          Write-Host "=========================================="
 
+          exit $exitCode
+
+      #=========================================
+      # Upload APK
+      #=========================================
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
