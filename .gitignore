@@ -12,7 +12,7 @@
 
 # Package Manager
 # /[Pp]ackages/
-manifest.json
+# manifest.json
 manifest.json.meta
 
 # MemoryCaptures can get excessive in size.
