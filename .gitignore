@@ -11,7 +11,7 @@
 /[Uu]ser[Ss]ettings/
 
 # Package Manager
-/[Pp]ackages/
+# /[Pp]ackages/
 manifest.json
 manifest.json.meta
 
