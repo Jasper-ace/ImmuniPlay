@@ -35,16 +35,18 @@ public static class BuildScript
 
         BuildReport report = BuildPipeline.BuildPlayer(options);
 
-        if (report.summary.result == BuildResult.Succeeded)
+        if (report.summary.result != BuildResult.Succeeded)
         {
-            Debug.Log("========== BUILD SUCCESS ==========");
-            Debug.Log($"APK Location: {apkPath}");
-            Debug.Log($"Build Size : {report.summary.totalSize} bytes");
-        }
-        else
-        {
-            Debug.LogError("========== BUILD FAILED ==========");
             throw new System.Exception("Android build failed.");
         }
+
+        if (!File.Exists(apkPath))
+        {
+            throw new System.Exception("Build succeeded but APK was not found:\n" + apkPath);
+        }
+
+        Debug.Log("========== BUILD SUCCESS ==========");
+        Debug.Log("APK: " + apkPath);
+        Debug.Log("Size: " + report.summary.totalSize + " bytes");
     }
 }

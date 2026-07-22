@@ -7,6 +7,9 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Android APK
@@ -14,7 +17,7 @@ jobs:
 
     steps:
       #=========================================
-      # Checkout
+      # Checkout Repository
       #=========================================
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -40,29 +43,13 @@ jobs:
         run: |
           Write-Host "========== GITHUB WORKSPACE =========="
           Write-Host $env:GITHUB_WORKSPACE
-          Write-Host ""
 
-          Write-Host "========== ROOT FILES =========="
+          Write-Host ""
+          Write-Host "========== ROOT =========="
           Get-ChildItem $env:GITHUB_WORKSPACE -Force
 
-          Write-Host ""
-          Write-Host "========== ASSETS =========="
-          if (Test-Path "$env:GITHUB_WORKSPACE\Assets") {
-            Get-ChildItem "$env:GITHUB_WORKSPACE\Assets"
-          } else {
-            Write-Host "Assets folder NOT FOUND!"
-          }
-
-          Write-Host ""
-          Write-Host "========== PACKAGES =========="
-          if (Test-Path "$env:GITHUB_WORKSPACE\Packages") {
-            Get-ChildItem "$env:GITHUB_WORKSPACE\Packages"
-          } else {
-            Write-Host "Packages folder NOT FOUND!"
-          }
-
       #=========================================
-      # Check Unity Installation
+      # Check Unity
       #=========================================
       - name: Check Unity Installation
         shell: powershell
@@ -73,11 +60,6 @@ jobs:
             throw "Unity not found: $unity"
           }
 
-          Write-Host "Unity Found:"
-          Get-Item $unity
-
-          Write-Host ""
-          Write-Host "Unity Version:"
           & $unity -version
 
       #=========================================
@@ -88,8 +70,7 @@ jobs:
         run: |
           $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1\Editor\Unity.exe"
 
-          Write-Host ""
-          Write-Host "========== STARTING UNITY BUILD =========="
+          Write-Host "========== START BUILD =========="
 
           & $unity `
             -batchmode `
@@ -97,21 +78,57 @@ jobs:
             -executeMethod BuildScript.BuildAndroid `
             -logFile -
 
-          $exitCode = $LASTEXITCODE
+          exit $LASTEXITCODE
+
+      #=========================================
+      # Find APK
+      #=========================================
+      - name: Find Build Output
+        shell: powershell
+        run: |
+          Write-Host "========== BUILD DIRECTORY =========="
+
+          if (Test-Path "${{ github.workspace }}\build") {
+            Get-ChildItem "${{ github.workspace }}\build" -Recurse -Force
+          }
+          else {
+            Write-Host "build folder does not exist."
+          }
 
           Write-Host ""
-          Write-Host "=========================================="
-          Write-Host "Unity Exit Code: $exitCode"
-          Write-Host "=========================================="
+          Write-Host "========== APK FILES =========="
 
-          exit $exitCode
+          $apks = Get-ChildItem "${{ github.workspace }}" -Recurse -Filter *.apk
+
+          if ($apks.Count -eq 0) {
+            throw "NO APK FOUND!"
+          }
+
+          foreach ($apk in $apks) {
+            Write-Host $apk.FullName
+          }
 
       #=========================================
-      # Upload APK
+      # Upload APK Artifact
       #=========================================
-      - name: Upload APK
+      - name: Upload APK Artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ImmuniPlay-APK
-          path: build/ImmuniPlay.apk
+          path: |
+            **/*.apk
+
+      #=========================================
+      # Upload APK to GitHub Release
+      #=========================================
+      - name: Upload APK to Release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          files: |
+            **/*.apk
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
