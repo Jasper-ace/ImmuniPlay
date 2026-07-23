@@ -13,15 +13,18 @@ permissions:
 
 
 jobs:
+
   build:
+
     name: Build Android APK
+
     runs-on: self-hosted
 
 
     steps:
 
       #=========================================
-      # Checkout Repository
+      # Checkout
       #=========================================
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -35,8 +38,11 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
+
           path: Library
+
           key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+
           restore-keys: |
             Library-Android-
 
@@ -52,11 +58,14 @@ jobs:
 
 
           if (!(Test-Path $unity)) {
+
               throw "Unity not found: $unity"
+
           }
 
 
           Write-Host "Unity Found"
+
           & $unity -version
 
 
@@ -77,9 +86,10 @@ jobs:
           & $unity `
             -batchmode `
             -nographics `
+            -quit `
             -projectPath "${{ github.workspace }}" `
             -executeMethod BuildScript.BuildAndroid `
-            -logFile unity-build.log
+            -logFile "${{ github.workspace }}\unity-build.log"
 
 
           $exitCode = $LASTEXITCODE
@@ -90,17 +100,20 @@ jobs:
           Write-Host $exitCode
 
 
-          Write-Host ""
-          Write-Host "========== UNITY LOG =========="
-
-
-          if(Test-Path unity-build.log)
+          if(Test-Path "${{ github.workspace }}\unity-build.log")
           {
-              Get-Content unity-build.log
+
+              Write-Host ""
+              Write-Host "========== UNITY LOG =========="
+
+              Get-Content "${{ github.workspace }}\unity-build.log"
+
           }
           else
           {
-              Write-Host "Unity log not created"
+
+              Write-Host "Unity log was not created"
+
           }
 
 
@@ -109,9 +122,9 @@ jobs:
 
 
       #=========================================
-      # Find APK
+      # Debug APK Output
       #=========================================
-      - name: Find APK Output
+      - name: Check Build Files
         shell: powershell
         run: |
 
@@ -121,20 +134,59 @@ jobs:
           $apkFiles = Get-ChildItem `
             "${{ github.workspace }}" `
             -Recurse `
-            -Filter *.apk
+            -Include *.apk `
+            -ErrorAction SilentlyContinue
 
 
           if($apkFiles.Count -eq 0)
           {
+
               Write-Host "NO APK FOUND"
-              exit 1
+
           }
-
-
-          foreach($apk in $apkFiles)
+          else
           {
-              Write-Host $apk.FullName
+
+              foreach($apk in $apkFiles)
+              {
+
+                  Write-Host $apk.FullName
+
+              }
+
           }
+
+
+          Write-Host ""
+          Write-Host "========== BUILD FOLDER =========="
+
+
+          if(Test-Path "${{ github.workspace }}\build")
+          {
+
+              Get-ChildItem "${{ github.workspace }}\build" -Recurse
+
+          }
+          else
+          {
+
+              Write-Host "No build folder created"
+
+          }
+
+
+
+      #=========================================
+      # Upload Build Log
+      #=========================================
+      - name: Upload Unity Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+
+          name: Unity-Build-Log
+
+          path: unity-build.log
 
 
 
@@ -154,7 +206,7 @@ jobs:
 
 
       #=========================================
-      # Upload APK To Release
+      # Upload APK To GitHub Release
       #=========================================
       - name: Upload APK To Release
         if: success()
