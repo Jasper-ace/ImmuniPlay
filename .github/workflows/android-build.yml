@@ -8,10 +8,6 @@ on:
   workflow_dispatch:
 
 
-permissions:
-  contents: write
-
-
 jobs:
 
   build:
@@ -23,13 +19,15 @@ jobs:
 
     steps:
 
+
       #=========================================
-      # Checkout
+      # Checkout Repository
       #=========================================
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           lfs: true
+
 
 
       #=========================================
@@ -47,6 +45,25 @@ jobs:
             Library-Android-
 
 
+
+      #=========================================
+      # Check Workspace
+      #=========================================
+      - name: Check Project
+        shell: powershell
+        run: |
+
+          Write-Host "========== WORKSPACE =========="
+
+          Write-Host "${{ github.workspace }}"
+
+
+          Write-Host ""
+
+          Get-ChildItem "${{ github.workspace }}" -Force
+
+
+
       #=========================================
       # Check Unity
       #=========================================
@@ -57,10 +74,9 @@ jobs:
           $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1\Editor\Unity.exe"
 
 
-          if (!(Test-Path $unity)) {
-
-              throw "Unity not found: $unity"
-
+          if(!(Test-Path $unity))
+          {
+              throw "Unity not found"
           }
 
 
@@ -79,105 +95,130 @@ jobs:
 
           $unity = "C:\Program Files\Unity\Hub\Editor\6000.3.8f1\Editor\Unity.exe"
 
+          $project = "${{ github.workspace }}"
+
+          $log = "$project\unity-build.log"
+
+
+
+          Write-Host "========== UNITY INFO =========="
+
+          Write-Host "Unity:"
+          Write-Host $unity
+
+          Write-Host ""
+
+          Write-Host "Project:"
+          Write-Host $project
+
+
+
+          if(Test-Path $log)
+          {
+              Remove-Item $log -Force
+          }
+
+
+
+          Write-Host ""
 
           Write-Host "========== START UNITY BUILD =========="
 
 
-          & $unity `
-            -batchmode `
-            -nographics `
-            -quit `
-            -projectPath "${{ github.workspace }}" `
-            -executeMethod BuildScript.BuildAndroid `
-            -logFile "${{ github.workspace }}\unity-build.log"
+
+          $arguments = @(
+              "-batchmode",
+              "-nographics",
+              "-quit",
+              "-projectPath",
+              $project,
+              "-executeMethod",
+              "BuildScript.BuildAndroid",
+              "-logFile",
+              $log
+          )
 
 
-          $exitCode = $LASTEXITCODE
+          $process = Start-Process `
+              -FilePath $unity `
+              -ArgumentList $arguments `
+              -Wait `
+              -PassThru `
+              -NoNewWindow
+
 
 
           Write-Host ""
+
           Write-Host "========== UNITY EXIT CODE =========="
-          Write-Host $exitCode
+
+          Write-Host $process.ExitCode
 
 
-          if(Test-Path "${{ github.workspace }}\unity-build.log")
+
+          Write-Host ""
+
+          if(Test-Path $log)
           {
 
-              Write-Host ""
               Write-Host "========== UNITY LOG =========="
 
-              Get-Content "${{ github.workspace }}\unity-build.log"
+              Get-Content $log
 
           }
           else
           {
 
-              Write-Host "Unity log was not created"
+              Write-Host "UNITY LOG WAS NOT CREATED"
 
           }
 
 
-          exit $exitCode
+          exit $process.ExitCode
+
 
 
 
       #=========================================
-      # Debug APK Output
+      # Find APK
       #=========================================
-      - name: Check Build Files
+      - name: Find APK Output
         shell: powershell
         run: |
 
           Write-Host "========== SEARCHING APK =========="
 
 
-          $apkFiles = Get-ChildItem `
-            "${{ github.workspace }}" `
-            -Recurse `
-            -Include *.apk `
-            -ErrorAction SilentlyContinue
+
+          $apk = Get-ChildItem `
+              "${{ github.workspace }}" `
+              -Recurse `
+              -Filter *.apk `
+              -ErrorAction SilentlyContinue
 
 
-          if($apkFiles.Count -eq 0)
+
+          if($apk.Count -eq 0)
           {
 
               Write-Host "NO APK FOUND"
 
-          }
-          else
-          {
-
-              foreach($apk in $apkFiles)
-              {
-
-                  Write-Host $apk.FullName
-
-              }
+              exit 1
 
           }
 
 
-          Write-Host ""
-          Write-Host "========== BUILD FOLDER =========="
-
-
-          if(Test-Path "${{ github.workspace }}\build")
+          foreach($file in $apk)
           {
 
-              Get-ChildItem "${{ github.workspace }}\build" -Recurse
-
-          }
-          else
-          {
-
-              Write-Host "No build folder created"
+              Write-Host $file.FullName
 
           }
 
 
 
       #=========================================
-      # Upload Build Log
+      # Upload Unity Log
       #=========================================
       - name: Upload Unity Log
         if: always()
@@ -191,7 +232,7 @@ jobs:
 
 
       #=========================================
-      # Upload APK Artifact
+      # Upload APK
       #=========================================
       - name: Upload APK Artifact
         if: success()
@@ -202,26 +243,3 @@ jobs:
 
           path: |
             **/*.apk
-
-
-
-      #=========================================
-      # Upload APK To GitHub Release
-      #=========================================
-      - name: Upload APK To Release
-        if: success()
-        uses: softprops/action-gh-release@v2
-
-        with:
-
-          tag_name: v1.0.0
-
-          files: |
-            **/*.apk
-
-          fail_on_unmatched_files: true
-
-
-        env:
-
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
