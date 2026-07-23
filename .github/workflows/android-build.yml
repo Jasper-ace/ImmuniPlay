@@ -231,8 +231,8 @@ jobs:
 
 
 
-      #=========================================
-      # Upload APK
+            #=========================================
+      # Upload APK Artifact
       #=========================================
       - name: Upload APK Artifact
         if: success()
@@ -243,3 +243,33 @@ jobs:
 
           path: |
             **/*.apk
+
+
+
+      #=========================================
+      # Upload APK To GitHub Release
+      #=========================================
+      - name: Upload APK To Release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+
+          tag_name: v1.0.0
+
+          name: ImmuniPlay v1.0.0
+
+          body: |
+            ImmuniPlay Android APK Release
+
+            Features:
+            - Educational immunization gameplay
+            - Parent learning experience
+            - Initial public release
+
+          files: |
+            **/*.apk
+
+          fail_on_unmatched_files: true
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
