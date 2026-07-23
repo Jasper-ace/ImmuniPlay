@@ -8,30 +8,48 @@ public static class BuildScript
 {
     public static void BuildAndroid()
     {
-        Debug.Log("========== IMMUNIPLAY ANDROID BUILD ==========");
+        Debug.Log("========== IMMUNIPLAY BUILD START ==========");
 
-        // Force Android platform
+
+        string current = Directory.GetCurrentDirectory();
+
+        Debug.Log("CURRENT DIRECTORY:");
+        Debug.Log(current);
+
+
+
+        Debug.Log("ACTIVE PLATFORM:");
+        Debug.Log(EditorUserBuildSettings.activeBuildTarget);
+
+
+
         if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
         {
-            Debug.Log("Switching platform to Android...");
+            Debug.Log("Switching to Android...");
 
-            BuildPipeline.SwitchActiveBuildTarget(
+            bool switched = BuildPipeline.SwitchActiveBuildTarget(
                 BuildTargetGroup.Android,
                 BuildTarget.Android
             );
+
+            Debug.Log("Platform switch result: " + switched);
         }
 
 
-        // Create build folder
+
         string buildFolder = Path.Combine(
-            Directory.GetCurrentDirectory(),
+            current,
             "build"
         );
 
-        if (!Directory.Exists(buildFolder))
-        {
-            Directory.CreateDirectory(buildFolder);
-        }
+
+        Debug.Log("BUILD FOLDER:");
+        Debug.Log(buildFolder);
+
+
+
+        Directory.CreateDirectory(buildFolder);
+
 
 
         string apkPath = Path.Combine(
@@ -40,82 +58,79 @@ public static class BuildScript
         );
 
 
-        Debug.Log("APK OUTPUT:");
+        Debug.Log("APK PATH:");
         Debug.Log(apkPath);
 
 
-        // Get enabled scenes
+
         string[] scenes = EditorBuildSettings.scenes
-            .Where(scene => scene.enabled)
-            .Select(scene => scene.path)
+            .Where(x => x.enabled)
+            .Select(x => x.path)
             .ToArray();
 
 
-        if (scenes.Length == 0)
-        {
-            throw new System.Exception(
-                "No scenes enabled in Build Settings."
-            );
-        }
+
+        Debug.Log("SCENE COUNT:");
+        Debug.Log(scenes.Length);
 
 
-        Debug.Log("Scenes:");
 
         foreach(string scene in scenes)
         {
+            Debug.Log("SCENE:");
             Debug.Log(scene);
         }
+
+
+
+        if(scenes.Length == 0)
+        {
+            throw new System.Exception(
+                "NO ENABLED SCENES"
+            );
+        }
+
 
 
         BuildPlayerOptions options = new BuildPlayerOptions
         {
             scenes = scenes,
-
             locationPathName = apkPath,
-
             target = BuildTarget.Android,
-
             options = BuildOptions.None
         };
 
 
-        Debug.Log("Starting Unity Android Build...");
+        Debug.Log("STARTING BUILD PLAYER");
 
 
-        BuildReport report =
-            BuildPipeline.BuildPlayer(options);
+
+        BuildReport report = BuildPipeline.BuildPlayer(options);
 
 
-        Debug.Log(
-            "Build Result: " + report.summary.result
-        );
+
+        Debug.Log("BUILD RESULT:");
+        Debug.Log(report.summary.result);
+
+
+
+        Debug.Log("ERRORS:");
+        Debug.Log(report.summary.totalErrors);
+
 
 
         if(report.summary.result != BuildResult.Succeeded)
         {
             throw new System.Exception(
-                "Android build failed."
+                "BUILD FAILED"
             );
         }
 
 
-        if(!File.Exists(apkPath))
-        {
-            throw new System.Exception(
-                "APK was not created:\n" + apkPath
-            );
-        }
+        Debug.Log("APK EXISTS:");
+        Debug.Log(File.Exists(apkPath));
 
 
-        FileInfo file = new FileInfo(apkPath);
-
-
-        Debug.Log("==============================");
-        Debug.Log("BUILD SUCCESS");
-        Debug.Log("APK:");
-        Debug.Log(apkPath);
-        Debug.Log("SIZE:");
-        Debug.Log(file.Length + " bytes");
-        Debug.Log("==============================");
+        Debug.Log("========== BUILD FINISHED ==========");
     }
 }
