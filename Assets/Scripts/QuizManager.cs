@@ -4,6 +4,10 @@ using TMPro;
 
 public class QuizManager : MonoBehaviour
 {
+    [Header("Chapter (for saving quiz score)")]
+    [Tooltip("Must match exactly: Chapter1, Chapter2, Chapter3, Chapter4, or Chapter5")]
+    public string chapterName = "Chapter1";
+
     [Header("Question Panels")]
     public GameObject[] questions;
 
@@ -121,6 +125,14 @@ if (wrong != null)
 
     if (currentQuestion >= questions.Length)
     {
+        // Auto-save quiz score and mark chapter as completed
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SetQuizScore(chapterName, score);
+            SaveManager.Instance.SetChapterCompleted(chapterName);
+        }
+
+
         finishPanel.SetActive(true);
 
         // Hide both result panels first

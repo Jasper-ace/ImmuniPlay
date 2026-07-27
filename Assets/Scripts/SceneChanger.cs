@@ -1,18 +1,24 @@
-using UnityEngine;
-using UnityEngine.SceneManagement; // Required for loading scenes
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour
 {
-    // Call this method from your Button's OnClick() in the Inspector
+    /// <summary>
+    /// Call this from a Button's OnClick() in the Inspector.
+    /// The destination scene name is saved to save.json before loading.
+    /// </summary>
     public void LoadSceneByName(string sceneName)
     {
-        if (!string.IsNullOrEmpty(sceneName))
+        if (string.IsNullOrEmpty(sceneName))
         {
-            SceneManager.LoadScene(sceneName);
+            Debug.LogWarning("[SceneChanger] Scene name is empty! Please enter a valid scene name.");
+            return;
         }
-        else
-        {
-            Debug.LogWarning("Scene name is empty! Please enter a valid scene name.");
-        }
+
+        // Auto-save the scene we are about to enter
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SaveCurrentScene(sceneName);
+
+        SceneManager.LoadScene(sceneName);
     }
 }

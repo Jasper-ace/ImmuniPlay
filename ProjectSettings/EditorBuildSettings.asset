@@ -25,7 +25,7 @@ EditorBuildSettings:
     guid: f32d3c2c029f8d746a8d439aec58b936
   - enabled: 1
     path: Assets/Chaper1/Scene5.unity
-    guid: e38a54658a5d08842932aa6a6f7a0882
+    guid: 69ef0650aea13e542b19a4bdcf367c84
   - enabled: 1
     path: Assets/Chaper1/Scene6.unity
     guid: c5db2cef8c12c2949b1fbca0d38ef65e
@@ -39,11 +39,11 @@ EditorBuildSettings:
     path: Assets/Chaper1/Scene9.unity
     guid: ce1a9b68e95552d4597b775ed22d87f1
   - enabled: 1
-    path: Assets/Chaper1/Scene10.unity
-    guid: 369a3c1537aa24c4384b15d9bfa867eb
-  - enabled: 1
     path: Assets/Chaper1/Scene11.unity
     guid: 6cabbf1f555685e4cbd4bbb4e4ac7b4c
+  - enabled: 1
+    path: Assets/Chaper1/Scene10.unity
+    guid: 369a3c1537aa24c4384b15d9bfa867eb
   - enabled: 1
     path: Assets/Chaper1/Scene12.unity
     guid: 77e0e029b2604a049ad2655cfb4ee241
@@ -54,12 +54,6 @@ EditorBuildSettings:
     path: Assets/Chapter2/Scene14.unity
     guid: 79eb88021f73c3144834cca51adfe53e
   - enabled: 1
-    path: Assets/Chapter2/Scene16.unity
-    guid: d58874dd9f946044fb458c0dae2f3125
-  - enabled: 1
-    path: Assets/Chapter2/Scene15.unity
-    guid: dae5169ea2e43ef46a3b260561c0c4a2
-  - enabled: 1
     path: Assets/Chapter2/Scene17.unity
     guid: a2094a388936c1342a4b415bc15ea27e
   - enabled: 1
@@ -69,11 +63,17 @@ EditorBuildSettings:
     path: Assets/Chapter2/Scene19.unity
     guid: d74fa2475d59ed44bab2f33a4dc4f45c
   - enabled: 1
+    path: Assets/Chapter2/Scene15.unity
+    guid: dae5169ea2e43ef46a3b260561c0c4a2
+  - enabled: 1
+    path: Assets/Chapter2/Scene16.unity
+    guid: d58874dd9f946044fb458c0dae2f3125
+  - enabled: 1
     path: Assets/Chapter2/Scene20.unity
     guid: 95dd190aacf19f845b67c0662264cfb8
   - enabled: 1
     path: Assets/Chapter2/Scene21.unity
-    guid: 090a9c93b5945be49962e454cbcbbf15
+    guid: eba656bc43943dd418decad510e0aaa0
   - enabled: 1
     path: Assets/Chaper3/Scene22.unity
     guid: 29e4c581b54a94e478ba84d9a8a6960a

@@ -3474,6 +3474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5b96e1e918537149804d9be5c851df9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuizManager
+  chapterName: Chapter2
   questions:
   - {fileID: 52757685}
   - {fileID: 1766631541}

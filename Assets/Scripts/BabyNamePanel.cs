@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
@@ -21,7 +21,10 @@ public class BabyNamePanel : MonoBehaviour
 
     public void Open()
     {
-        nameInput.text = "";
+        // Pre-fill with previously saved name (if any)
+        string saved = SaveManager.Instance != null ? SaveManager.Instance.GetBabyName() : "";
+        nameInput.text = saved;
+
         gameObject.SetActive(true);
 
         nameInput.ActivateInputField();
@@ -34,11 +37,12 @@ public class BabyNamePanel : MonoBehaviour
         if (BabyName == "")
             return;
 
-        PlayerPrefs.SetString("BabyName", BabyName);
-        PlayerPrefs.Save();
+        // Save to JSON via SaveManager (auto-saves to disk)
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SetBabyName(BabyName);
 
         gameObject.SetActive(false);
 
         OnNameConfirmed?.Invoke(BabyName);
     }
-}   
+}

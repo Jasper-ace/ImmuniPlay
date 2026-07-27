@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ChapterManager : MonoBehaviour
@@ -10,44 +10,41 @@ public class ChapterManager : MonoBehaviour
 
     void Start()
     {
-        // Chapter 2
-        chapter2Button.interactable =
-            PlayerPrefs.GetInt("Chapter1Done", 0) == 1;
-
-        // Chapter 3
-        chapter3Button.interactable =
-            PlayerPrefs.GetInt("Chapter2Done", 0) == 1;
-
-        // Chapter 4
-        chapter4Button.interactable =
-            PlayerPrefs.GetInt("Chapter3Done", 0) == 1;
-
-        // Chapter 5
-        chapter5Button.interactable =
-            PlayerPrefs.GetInt("Chapter4Done", 0) == 1;
+        // Lock/unlock chapter buttons based on what has been completed.
+        // SaveManager loads the save file automatically on Awake,
+        // so the data is ready here.
+        chapter2Button.interactable = SaveManager.Instance.IsChapterCompleted("Chapter1");
+        chapter3Button.interactable = SaveManager.Instance.IsChapterCompleted("Chapter2");
+        chapter4Button.interactable = SaveManager.Instance.IsChapterCompleted("Chapter3");
+        chapter5Button.interactable = SaveManager.Instance.IsChapterCompleted("Chapter4");
     }
+
+    // -----------------------------------------------------------------------
+    //  Call these from your game when a chapter ends
+    // -----------------------------------------------------------------------
 
     public void CompleteChapter1()
     {
-        PlayerPrefs.SetInt("Chapter1Done", 1);
-        PlayerPrefs.Save();
+        SaveManager.Instance.SetChapterCompleted("Chapter1");
     }
 
     public void CompleteChapter2()
     {
-        PlayerPrefs.SetInt("Chapter2Done", 1);
-        PlayerPrefs.Save();
+        SaveManager.Instance.SetChapterCompleted("Chapter2");
     }
 
     public void CompleteChapter3()
     {
-        PlayerPrefs.SetInt("Chapter3Done", 1);
-        PlayerPrefs.Save();
+        SaveManager.Instance.SetChapterCompleted("Chapter3");
     }
 
     public void CompleteChapter4()
     {
-        PlayerPrefs.SetInt("Chapter4Done", 1);
-        PlayerPrefs.Save();
+        SaveManager.Instance.SetChapterCompleted("Chapter4");
+    }
+
+    public void CompleteChapter5()
+    {
+        SaveManager.Instance.SetChapterCompleted("Chapter5");
     }
 }
