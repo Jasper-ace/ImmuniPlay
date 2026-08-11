@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 [Serializable]
 public class SaveData
@@ -10,8 +10,15 @@ public class SaveData
     public bool chapter4Completed = false;
     public bool chapter5Completed = false;
 
-    // Last scene the player was on
+    // Last scene the player was on (used for the CONTINUE button)
     public string currentScene = "";
+
+    // Per-chapter last scene (used by chapter buttons to resume correctly)
+    public string lastSceneChapter1 = "";
+    public string lastSceneChapter2 = "";
+    public string lastSceneChapter3 = "";
+    public string lastSceneChapter4 = "";
+    public string lastSceneChapter5 = "";
 
     // Per-chapter quiz scores
     public int quizScoreChapter1 = 0;
@@ -23,3 +30,4 @@ public class SaveData
     // Baby name
     public string babyName = "";
 }
+

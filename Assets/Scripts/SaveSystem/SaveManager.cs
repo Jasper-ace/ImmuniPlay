@@ -64,31 +64,115 @@ public class SaveManager : MonoBehaviour
             SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    // -----------------------------------------------------------------------
+    //  Active chapter tracking
+    // -----------------------------------------------------------------------
+
+    // Set by ChapterResumeButton when a chapter is entered
+    private string _activeChapter = "";
+
+    // True while the player is replaying a completed chapter.
+    // Per-chapter scene progress is frozen during replay so that
+    // visiting Chapter 1 cannot overwrite Chapter 2's saved scene.
+    private bool _isReplayMode = false;
+
+    /// <summary>
+    /// Called by ChapterResumeButton to tell SaveManager which chapter
+    /// the player is about to enter. Used to save per-chapter progress.
+    /// </summary>
+    public void SetActiveChapter(string chapterName)
+    {
+        _activeChapter = chapterName;
+        Debug.Log("[SaveManager] Active chapter set to: " + chapterName);
+    }
+
+    /// <summary>
+    /// Enable replay mode when re-entering a completed chapter.
+    /// Per-chapter scene data is not written during replay.
+    /// </summary>
+    public void SetReplayMode(bool isReplaying)
+    {
+        _isReplayMode = isReplaying;
+        Debug.Log("[SaveManager] Replay mode: " + isReplaying);
+    }
+
+    /// <summary>
+    /// Save the last scene reached inside a specific chapter.
+    /// </summary>
+    public void SaveChapterScene(string chapterName, string sceneName)
+    {
+        switch (chapterName)
+        {
+            case "Chapter1": CurrentSave.lastSceneChapter1 = sceneName; break;
+            case "Chapter2": CurrentSave.lastSceneChapter2 = sceneName; break;
+            case "Chapter3": CurrentSave.lastSceneChapter3 = sceneName; break;
+            case "Chapter4": CurrentSave.lastSceneChapter4 = sceneName; break;
+            case "Chapter5": CurrentSave.lastSceneChapter5 = sceneName; break;
+        }
+    }
+
+    /// <summary>
+    /// Get the last scene reached inside a specific chapter.
+    /// Returns empty string if the player has never entered that chapter.
+    /// </summary>
+    public string GetChapterScene(string chapterName)
+    {
+        return chapterName switch
+        {
+            "Chapter1" => CurrentSave.lastSceneChapter1,
+            "Chapter2" => CurrentSave.lastSceneChapter2,
+            "Chapter3" => CurrentSave.lastSceneChapter3,
+            "Chapter4" => CurrentSave.lastSceneChapter4,
+            "Chapter5" => CurrentSave.lastSceneChapter5,
+            _ => ""
+        };
+    }
+
+    // -----------------------------------------------------------------------
+    //  Scene lifecycle hooks
+    // -----------------------------------------------------------------------
+
     /// <summary>
     /// Fires automatically whenever any scene finishes loading.
-    /// Saves the new scene name — except TitleScene (main menu).
+    /// Updates both the global currentScene (CONTINUE button) and
+    /// the per-chapter last scene (chapter buttons).
     /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Never overwrite a real game scene with the main menu
-        if (scene.name == "TitleScene") return;
+        if (IsHubScene(scene.name))
+        {
+            // Player returned to hub — clear chapter tracking and replay mode
+            _activeChapter = "";
+            _isReplayMode = false;
+            return;
+        }
 
+        // Global resume point (used by CONTINUE button)
         CurrentSave.currentScene = scene.name;
+
+        // Per-chapter resume point — skipped during replay so completed
+        // chapter visits never overwrite in-progress chapter saves
+        if (!string.IsNullOrEmpty(_activeChapter) && !_isReplayMode)
+            SaveChapterScene(_activeChapter, scene.name);
+
         SaveGame();
 
-        Debug.Log("[SaveManager] Scene loaded and saved: " + scene.name);
+        Debug.Log("[SaveManager] Scene saved: " + scene.name
+            + " | Chapter: " + (_activeChapter == "" ? "none" : _activeChapter)
+            + " | Replay: " + _isReplayMode);
     }
 
     /// <summary>
     /// Safety net for PC/Editor — fires when the player quits.
-    /// SceneManager.sceneLoaded already handles this in normal play.
     /// </summary>
     private void OnApplicationQuit()
     {
         string active = SceneManager.GetActiveScene().name;
-        if (!string.IsNullOrEmpty(active) && active != "TitleScene")
+        if (!IsHubScene(active))
         {
             CurrentSave.currentScene = active;
+            if (!string.IsNullOrEmpty(_activeChapter) && !_isReplayMode)
+                SaveChapterScene(_activeChapter, active);
             SaveGame();
         }
     }
@@ -101,12 +185,26 @@ public class SaveManager : MonoBehaviour
         if (!isPaused) return;
 
         string active = SceneManager.GetActiveScene().name;
-        if (!string.IsNullOrEmpty(active) && active != "TitleScene")
+        if (!IsHubScene(active))
         {
             CurrentSave.currentScene = active;
+            if (!string.IsNullOrEmpty(_activeChapter) && !_isReplayMode)
+                SaveChapterScene(_activeChapter, active);
             SaveGame();
         }
     }
+
+    /// <summary>
+    /// Returns true for scenes that are navigation hubs, not gameplay scenes.
+    /// These should never overwrite real gameplay progress.
+    /// </summary>
+    private bool IsHubScene(string sceneName)
+    {
+        return string.IsNullOrEmpty(sceneName)
+            || sceneName == "TitleScene"
+            || sceneName == "Chapters";
+    }
+
 
     // -----------------------------------------------------------------------
     //  Chapter progress

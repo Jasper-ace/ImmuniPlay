@@ -411,6 +411,7 @@ GameObject:
   - component: {fileID: 504057841}
   - component: {fileID: 504057840}
   - component: {fileID: 504057839}
+  - component: {fileID: 504057842}
   m_Layer: 5
   m_Name: Chapter2
   m_TagString: Untagged
@@ -480,7 +481,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 504057840}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 504057842}
+        m_TargetAssemblyTypeName: ChapterResumeButton, Assembly-CSharp
+        m_MethodName: OnChapterButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &504057840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -519,6 +532,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 504057837}
   m_CullTransparentMesh: 1
+--- !u!114 &504057842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504057837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b4de88ebf2aa8459ce432b47a36b03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChapterResumeButton
+  chapterName: Chapter2
+  defaultStartScene: Scene13
+  chapterScenes: []
+  sceneFade: {fileID: 1914741638}
 --- !u!1 &556302205
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,6 +1107,7 @@ GameObject:
   - component: {fileID: 942837331}
   - component: {fileID: 942837330}
   - component: {fileID: 942837329}
+  - component: {fileID: 942837332}
   m_Layer: 5
   m_Name: Chapter1
   m_TagString: Untagged
@@ -1148,16 +1178,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1914741638}
-        m_TargetAssemblyTypeName: SceneFade, Assembly-CSharp
-        m_MethodName: FadeToScene
-        m_Mode: 5
+      - m_Target: {fileID: 942837332}
+        m_TargetAssemblyTypeName: ChapterResumeButton, Assembly-CSharp
+        m_MethodName: OnChapterButtonClicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Scene1
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &942837330
@@ -1198,6 +1228,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 942837327}
   m_CullTransparentMesh: 1
+--- !u!114 &942837332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 942837327}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b4de88ebf2aa8459ce432b47a36b03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChapterResumeButton
+  chapterName: Chapter1
+  defaultStartScene: Scene1
+  chapterScenes: []
+  sceneFade: {fileID: 1914741638}
 --- !u!1 &964805845
 GameObject:
   m_ObjectHideFlags: 0

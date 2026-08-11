@@ -1,0 +1,1683 @@
+fileFormatVersion: 2
+guid: 4f998caf308b5004fb9c9ed7b3beb93e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3561899406267841177
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__0
+  - first:
+      213: -4194193658676959293
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__1
+  - first:
+      213: -4001579076766069021
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__2
+  - first:
+      213: -4614192201710715226
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__3
+  - first:
+      213: -6963077392450275256
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__4
+  - first:
+      213: 7175172741851133760
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__5
+  - first:
+      213: 2369589033464024637
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__6
+  - first:
+      213: -875864343546888356
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__7
+  - first:
+      213: 1674372241161496615
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__8
+  - first:
+      213: -1471184116952064792
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__9
+  - first:
+      213: 4399300986899617350
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__10
+  - first:
+      213: 5952981819928311652
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__11
+  - first:
+      213: -6753333753345787824
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__12
+  - first:
+      213: -3017080532474180243
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__13
+  - first:
+      213: -3514792859912721929
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__14
+  - first:
+      213: 2705325381729599814
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__15
+  - first:
+      213: 6755616447420760509
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__16
+  - first:
+      213: 4318157447729522584
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__17
+  - first:
+      213: 5408261839116659000
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__18
+  - first:
+      213: 1873398431893311666
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__19
+  - first:
+      213: -6237125311363954157
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__20
+  - first:
+      213: -8474197609879242618
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__21
+  - first:
+      213: 5005247251759740822
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__22
+  - first:
+      213: -2592320569206119005
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__23
+  - first:
+      213: 5795618698872941444
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__24
+  - first:
+      213: 3175228525445527632
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__25
+  - first:
+      213: -1365709159527758710
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__26
+  - first:
+      213: 5048297278584260897
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__27
+  - first:
+      213: -4187813864709951151
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__28
+  - first:
+      213: -4961395421468298689
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__29
+  - first:
+      213: -3294488093139895324
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__30
+  - first:
+      213: -8651315310046844329
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__31
+  - first:
+      213: -2152819942675428673
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__32
+  - first:
+      213: 387825688767625885
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__33
+  - first:
+      213: 8508983639863034830
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__34
+  - first:
+      213: -8257219106311533414
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__35
+  - first:
+      213: -6282526101779397402
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__36
+  - first:
+      213: -1561615001045678472
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__37
+  - first:
+      213: 5025225098943587732
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__38
+  - first:
+      213: 8834724950291970823
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__39
+  - first:
+      213: 6371809322265649511
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__40
+  - first:
+      213: 4179401027720956467
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__41
+  - first:
+      213: 6237307518705493174
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__42
+  - first:
+      213: 4492229270808649695
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__43
+  - first:
+      213: 6932918155665953571
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__44
+  - first:
+      213: -5458573150765021311
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__45
+  - first:
+      213: 4182463761452801901
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__46
+  - first:
+      213: -7372571439815848278
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__47
+  - first:
+      213: 3599733179315933509
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__48
+  - first:
+      213: -6989928548227609408
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__49
+  - first:
+      213: 3725778751703003554
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__50
+  - first:
+      213: -1668819509113869736
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__51
+  - first:
+      213: -2737233121723876830
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__52
+  - first:
+      213: 579672759910165988
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__53
+  - first:
+      213: -5861659935365345918
+    second: Good morning! It's nice to see you again. How are you and your baby doing
+      today__54
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 53
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7650bbb9c57919ec0800000000000000
+      internalID: -3561899406267841177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__1
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 53
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c72d57d61b3bc5c0800000000000000
+      internalID: -4194193658676959293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__2
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ee09bce7098778c0800000000000000
+      internalID: -4001579076766069021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__3
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 53
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6aeb7abb3a817ffb0800000000000000
+      internalID: -4614192201710715226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__4
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 53
+        width: 16
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 848b277e00e2e5f90800000000000000
+      internalID: -6963077392450275256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__5
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 53
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0473a10d795539360800000000000000
+      internalID: 7175172741851133760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__6
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 53
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3ec84bdba872e020800000000000000
+      internalID: 2369589033464024637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__7
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 53
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5ff473250e48d3f0800000000000000
+      internalID: -875864343546888356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__8
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 728a430aea09c3710800000000000000
+      internalID: 1674372241161496615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__9
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 49
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ec10ed17dd459be0800000000000000
+      internalID: -1471184116952064792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__10
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 53
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6465d2860f47d0d30800000000000000
+      internalID: 4399300986899617350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__11
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4677f2bcc6d3d9250800000000000000
+      internalID: 5952981819928311652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__12
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0583b266bb65742a0800000000000000
+      internalID: -6753333753345787824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__13
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 53
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6d412bad3d2126d0800000000000000
+      internalID: -3017080532474180243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__14
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f9a2dd1482f83fc0800000000000000
+      internalID: -3514792859912721929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__15
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 53
+        width: 8
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64147dbe91f3b8520800000000000000
+      internalID: 2705325381729599814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__16
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db10d4bbd55c0cd50800000000000000
+      internalID: 6755616447420760509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__17
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 53
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8972024f15d2deb30800000000000000
+      internalID: 4318157447729522584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__18
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83969dc0d710e0b40800000000000000
+      internalID: 5408261839116659000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__19
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 53
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b056c7b2f5aff910800000000000000
+      internalID: 1873398431893311666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__20
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 49
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31acd8433974179a0800000000000000
+      internalID: -6237125311363954157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__21
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 53
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 688feaa0c2a956a80800000000000000
+      internalID: -8474197609879242618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__22
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 53
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 697b3264bd5367540800000000000000
+      internalID: 5005247251759740822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__23
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 28
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a5e7805d2a360cd0800000000000000
+      internalID: -2592320569206119005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__24
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 24
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48beee7008c2e6050800000000000000
+      internalID: 5795618698872941444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__25
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 28
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0583ed3558da01c20800000000000000
+      internalID: 3175228525445527632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__26
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 28
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a84c9d751c60c0de0800000000000000
+      internalID: -1365709159527758710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__27
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 28
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 129069ab0a72f0640800000000000000
+      internalID: 5048297278584260897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__28
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 28
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 151f1806a75e1e5c0800000000000000
+      internalID: -4187813864709951151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__29
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 28
+        width: 16
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f32f1299625952bb0800000000000000
+      internalID: -4961395421468298689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__30
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 28
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eb74a3c880a742d0800000000000000
+      internalID: -3294488093139895324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__31
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 28
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75a62c8ef8a50f780800000000000000
+      internalID: -8651315310046844329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__32
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 28
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fba44731ba5af12e0800000000000000
+      internalID: -2152819942675428673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__33
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 24
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9af3cdb865d16500800000000000000
+      internalID: 387825688767625885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__34
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 28
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec385a5b98bf51670800000000000000
+      internalID: 8508983639863034830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__35
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 28
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9c8bbfa8f6786d80800000000000000
+      internalID: -8257219106311533414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__36
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 28
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e4c153fbcbffc8a0800000000000000
+      internalID: -6282526101779397402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__37
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 28
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87640ca2e67045ae0800000000000000
+      internalID: -1561615001045678472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__38
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 28
+        width: 11
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 495e8ea4a9f2db540800000000000000
+      internalID: 5025225098943587732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__39
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 24
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70bfe6ea88f3b9a70800000000000000
+      internalID: 8834724950291970823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__40
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 28
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 761aa2eb1d63d6850800000000000000
+      internalID: 6371809322265649511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__41
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 28
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33ac53f5717300a30800000000000000
+      internalID: 4179401027720956467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__42
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 28
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b4605f342e5f8650800000000000000
+      internalID: 6237307518705493174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__43
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 28
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdf592098ba975e30800000000000000
+      internalID: 4492229270808649695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__44
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 28
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3235355945ca63060800000000000000
+      internalID: 6932918155665953571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__45
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 28
+        width: 11
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1878a20e3a04f34b0800000000000000
+      internalID: -5458573150765021311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__46
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 24
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6f9653a1a81b0a30800000000000000
+      internalID: 4182463761452801901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__47
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3
+        width: 10
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aae0698465d5fa990800000000000000
+      internalID: -7372571439815848278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__48
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 3
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 541505f1142d4f130800000000000000
+      internalID: 3599733179315933509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__49
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 3
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cc08850509cefe90800000000000000
+      internalID: -6989928548227609408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__50
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 0
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a1b4fed800a4b330800000000000000
+      internalID: 3725778751703003554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__51
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 3
+        width: 8
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85aa60d8f7927d8e0800000000000000
+      internalID: -1668819509113869736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__52
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 3
+        width: 22
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22af6307af4630ad0800000000000000
+      internalID: -2737233121723876830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__53
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 3
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ed6a6ccd496b0800800000000000000
+      internalID: 579672759910165988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Good morning! It's nice to see you again. How are you and your baby doing
+        today__54
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 0
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28dc86e585337aea0800000000000000
+      internalID: -5861659935365345918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Good morning! It's nice to see you again. How are you and your baby doing today__0: -3561899406267841177
+      Good morning! It's nice to see you again. How are you and your baby doing today__1: -4194193658676959293
+      Good morning! It's nice to see you again. How are you and your baby doing today__10: 4399300986899617350
+      Good morning! It's nice to see you again. How are you and your baby doing today__11: 5952981819928311652
+      Good morning! It's nice to see you again. How are you and your baby doing today__12: -6753333753345787824
+      Good morning! It's nice to see you again. How are you and your baby doing today__13: -3017080532474180243
+      Good morning! It's nice to see you again. How are you and your baby doing today__14: -3514792859912721929
+      Good morning! It's nice to see you again. How are you and your baby doing today__15: 2705325381729599814
+      Good morning! It's nice to see you again. How are you and your baby doing today__16: 6755616447420760509
+      Good morning! It's nice to see you again. How are you and your baby doing today__17: 4318157447729522584
+      Good morning! It's nice to see you again. How are you and your baby doing today__18: 5408261839116659000
+      Good morning! It's nice to see you again. How are you and your baby doing today__19: 1873398431893311666
+      Good morning! It's nice to see you again. How are you and your baby doing today__2: -4001579076766069021
+      Good morning! It's nice to see you again. How are you and your baby doing today__20: -6237125311363954157
+      Good morning! It's nice to see you again. How are you and your baby doing today__21: -8474197609879242618
+      Good morning! It's nice to see you again. How are you and your baby doing today__22: 5005247251759740822
+      Good morning! It's nice to see you again. How are you and your baby doing today__23: -2592320569206119005
+      Good morning! It's nice to see you again. How are you and your baby doing today__24: 5795618698872941444
+      Good morning! It's nice to see you again. How are you and your baby doing today__25: 3175228525445527632
+      Good morning! It's nice to see you again. How are you and your baby doing today__26: -1365709159527758710
+      Good morning! It's nice to see you again. How are you and your baby doing today__27: 5048297278584260897
+      Good morning! It's nice to see you again. How are you and your baby doing today__28: -4187813864709951151
+      Good morning! It's nice to see you again. How are you and your baby doing today__29: -4961395421468298689
+      Good morning! It's nice to see you again. How are you and your baby doing today__3: -4614192201710715226
+      Good morning! It's nice to see you again. How are you and your baby doing today__30: -3294488093139895324
+      Good morning! It's nice to see you again. How are you and your baby doing today__31: -8651315310046844329
+      Good morning! It's nice to see you again. How are you and your baby doing today__32: -2152819942675428673
+      Good morning! It's nice to see you again. How are you and your baby doing today__33: 387825688767625885
+      Good morning! It's nice to see you again. How are you and your baby doing today__34: 8508983639863034830
+      Good morning! It's nice to see you again. How are you and your baby doing today__35: -8257219106311533414
+      Good morning! It's nice to see you again. How are you and your baby doing today__36: -6282526101779397402
+      Good morning! It's nice to see you again. How are you and your baby doing today__37: -1561615001045678472
+      Good morning! It's nice to see you again. How are you and your baby doing today__38: 5025225098943587732
+      Good morning! It's nice to see you again. How are you and your baby doing today__39: 8834724950291970823
+      Good morning! It's nice to see you again. How are you and your baby doing today__4: -6963077392450275256
+      Good morning! It's nice to see you again. How are you and your baby doing today__40: 6371809322265649511
+      Good morning! It's nice to see you again. How are you and your baby doing today__41: 4179401027720956467
+      Good morning! It's nice to see you again. How are you and your baby doing today__42: 6237307518705493174
+      Good morning! It's nice to see you again. How are you and your baby doing today__43: 4492229270808649695
+      Good morning! It's nice to see you again. How are you and your baby doing today__44: 6932918155665953571
+      Good morning! It's nice to see you again. How are you and your baby doing today__45: -5458573150765021311
+      Good morning! It's nice to see you again. How are you and your baby doing today__46: 4182463761452801901
+      Good morning! It's nice to see you again. How are you and your baby doing today__47: -7372571439815848278
+      Good morning! It's nice to see you again. How are you and your baby doing today__48: 3599733179315933509
+      Good morning! It's nice to see you again. How are you and your baby doing today__49: -6989928548227609408
+      Good morning! It's nice to see you again. How are you and your baby doing today__5: 7175172741851133760
+      Good morning! It's nice to see you again. How are you and your baby doing today__50: 3725778751703003554
+      Good morning! It's nice to see you again. How are you and your baby doing today__51: -1668819509113869736
+      Good morning! It's nice to see you again. How are you and your baby doing today__52: -2737233121723876830
+      Good morning! It's nice to see you again. How are you and your baby doing today__53: 579672759910165988
+      Good morning! It's nice to see you again. How are you and your baby doing today__54: -5861659935365345918
+      Good morning! It's nice to see you again. How are you and your baby doing today__6: 2369589033464024637
+      Good morning! It's nice to see you again. How are you and your baby doing today__7: -875864343546888356
+      Good morning! It's nice to see you again. How are you and your baby doing today__8: 1674372241161496615
+      Good morning! It's nice to see you again. How are you and your baby doing today__9: -1471184116952064792
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
