@@ -98,6 +98,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Chaper3/Scene29.unity
     guid: 6c7af88ea21334e4bad258755f115619
+  - enabled: 1
+    path: Assets/Chaper3/Scene30.unity
+    guid: 12e702af38fbf644d8d60abe6d2b1b26
+  - enabled: 1
+    path: Assets/RetakeQuiz/RetakeQuiz1.unity
+    guid: d6b1307e14955234a9c399f97d7f4def
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

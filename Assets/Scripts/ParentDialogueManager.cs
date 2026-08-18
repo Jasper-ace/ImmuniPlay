@@ -11,7 +11,7 @@ public class ParentDialogueManager : MonoBehaviour
         [TextArea(2, 5)]
         public string text;
 
-        public bool isMother; // true = Mother, false = Father
+        public bool isMother;
     }
 
     [Header("Dialogue")]
@@ -28,27 +28,39 @@ public class ParentDialogueManager : MonoBehaviour
     [Header("Typewriter")]
     public float typingSpeed = 0.03f;
 
+    [Header("Scene Manager")]
+    public GameObject sceneManager;
+
     [Header("Next Scene (Optional)")]
-    public string nextSceneName = ""; // Leave empty to use nextParent instead
-    
+    public string nextSceneName = "";
+
     [Header("Next Parent (Fallback)")]
     public GameObject nextParent;
 
     private int currentIndex = 0;
     private bool isTyping = false;
+    private bool isTransitioning = false;
     private Coroutine typingCoroutine;
 
     void Start()
     {
-        motherBubble.SetActive(false);
-        fatherBubble.SetActive(false);
+        if (motherBubble != null)
+            motherBubble.SetActive(false);
 
-        if (dialogues.Length > 0)
+        if (fatherBubble != null)
+            fatherBubble.SetActive(false);
+
+        if (dialogues != null && dialogues.Length > 0)
+        {
             ShowDialogue();
+        }
     }
 
     void Update()
     {
+        if (isTransitioning)
+            return;
+
         if (!Input.GetMouseButtonDown(0))
             return;
 
@@ -66,20 +78,52 @@ public class ParentDialogueManager : MonoBehaviour
     {
         currentIndex++;
 
+        // All dialogues finished
         if (currentIndex >= dialogues.Length)
         {
-            // If a scene name is provided, load it
+            isTransitioning = true;
+
+            // =========================
+            // NEXT SCENE
+            // =========================
             if (!string.IsNullOrEmpty(nextSceneName))
             {
-                SceneManager.LoadScene(nextSceneName);
-            }
-            // Otherwise, activate the next parent GameObject if assigned
-            else if (nextParent != null)
-            {
-                nextParent.SetActive(true);
+                if (sceneManager != null)
+                {
+                    SceneFade fade = sceneManager.GetComponent<SceneFade>();
+                    if (fade != null)
+                    {
+                        // Call FadeToScene - it handles everything
+                        fade.FadeToScene(nextSceneName);
+                    }
+                    else
+                    {
+                        Debug.LogError("SceneFade component not found on sceneManager!");
+                        SceneManager.LoadScene(nextSceneName);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Scene Manager not assigned, loading scene directly");
+                    SceneManager.LoadScene(nextSceneName);
+                }
+
+                return;
             }
 
+            // =========================
+            // NEXT PARENT
+            // =========================
+            if (nextParent != null)
+            {
+                gameObject.SetActive(false);
+                nextParent.SetActive(true);
+                return;
+            }
+
+            // No next parent or scene
             gameObject.SetActive(false);
+
             return;
         }
 
@@ -88,24 +132,37 @@ public class ParentDialogueManager : MonoBehaviour
 
     void ShowDialogue()
     {
-        motherBubble.SetActive(false);
-        fatherBubble.SetActive(false);
+        if (motherBubble != null)
+            motherBubble.SetActive(false);
+
+        if (fatherBubble != null)
+            fatherBubble.SetActive(false);
 
         Dialogue dialogue = dialogues[currentIndex];
 
         if (dialogue.isMother)
         {
-            motherBubble.SetActive(true);
-            motherTMP.text = "";
+            if (motherBubble != null)
+                motherBubble.SetActive(true);
 
-            typingCoroutine = StartCoroutine(TypeText(motherTMP, dialogue.text));
+            if (motherTMP != null)
+                motherTMP.text = "";
+
+            typingCoroutine = StartCoroutine(
+                TypeText(motherTMP, dialogue.text)
+            );
         }
         else
         {
-            fatherBubble.SetActive(true);
-            fatherTMP.text = "";
+            if (fatherBubble != null)
+                fatherBubble.SetActive(true);
 
-            typingCoroutine = StartCoroutine(TypeText(fatherTMP, dialogue.text));
+            if (fatherTMP != null)
+                fatherTMP.text = "";
+
+            typingCoroutine = StartCoroutine(
+                TypeText(fatherTMP, dialogue.text)
+            );
         }
     }
 
@@ -113,11 +170,14 @@ public class ParentDialogueManager : MonoBehaviour
     {
         isTyping = true;
 
-        target.text = "";
+        if (target != null)
+            target.text = "";
 
         foreach (char c in text)
         {
-            target.text += c;
+            if (target != null)
+                target.text += c;
+
             yield return new WaitForSeconds(typingSpeed);
         }
 
@@ -133,15 +193,20 @@ public class ParentDialogueManager : MonoBehaviour
             typingCoroutine = null;
         }
 
+        if (currentIndex >= dialogues.Length)
+            return;
+
         Dialogue dialogue = dialogues[currentIndex];
 
         if (dialogue.isMother)
         {
-            motherTMP.text = dialogue.text;
+            if (motherTMP != null)
+                motherTMP.text = dialogue.text;
         }
         else
         {
-            fatherTMP.text = dialogue.text;
+            if (fatherTMP != null)
+                fatherTMP.text = dialogue.text;
         }
 
         isTyping = false;

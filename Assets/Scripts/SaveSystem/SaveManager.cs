@@ -128,6 +128,38 @@ public class SaveManager : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Save the last scene reached while replaying a completed chapter.
+    /// </summary>
+    public void SaveReplayChapterScene(string chapterName, string sceneName)
+    {
+        switch (chapterName)
+        {
+            case "Chapter1": CurrentSave.lastSceneReplayChapter1 = sceneName; break;
+            case "Chapter2": CurrentSave.lastSceneReplayChapter2 = sceneName; break;
+            case "Chapter3": CurrentSave.lastSceneReplayChapter3 = sceneName; break;
+            case "Chapter4": CurrentSave.lastSceneReplayChapter4 = sceneName; break;
+            case "Chapter5": CurrentSave.lastSceneReplayChapter5 = sceneName; break;
+        }
+    }
+
+    /// <summary>
+    /// Get the last scene reached while replaying a completed chapter.
+    /// Returns empty string if the chapter has never been replayed.
+    /// </summary>
+    public string GetReplayChapterScene(string chapterName)
+    {
+        return chapterName switch
+        {
+            "Chapter1" => CurrentSave.lastSceneReplayChapter1,
+            "Chapter2" => CurrentSave.lastSceneReplayChapter2,
+            "Chapter3" => CurrentSave.lastSceneReplayChapter3,
+            "Chapter4" => CurrentSave.lastSceneReplayChapter4,
+            "Chapter5" => CurrentSave.lastSceneReplayChapter5,
+            _ => ""
+        };
+    }
+
     // -----------------------------------------------------------------------
     //  Scene lifecycle hooks
     // -----------------------------------------------------------------------
@@ -150,10 +182,15 @@ public class SaveManager : MonoBehaviour
         // Global resume point (used by CONTINUE button)
         CurrentSave.currentScene = scene.name;
 
-        // Per-chapter resume point — skipped during replay so completed
-        // chapter visits never overwrite in-progress chapter saves
-        if (!string.IsNullOrEmpty(_activeChapter) && !_isReplayMode)
-            SaveChapterScene(_activeChapter, scene.name);
+        if (!string.IsNullOrEmpty(_activeChapter))
+        {
+            if (_isReplayMode)
+                // Replay mode — save to replay slot, not the main progress slot
+                SaveReplayChapterScene(_activeChapter, scene.name);
+            else
+                // Normal play — save to main progress slot
+                SaveChapterScene(_activeChapter, scene.name);
+        }
 
         SaveGame();
 
@@ -326,6 +363,47 @@ public class SaveManager : MonoBehaviour
     }
 
     // -----------------------------------------------------------------------
+    //  Quiz attempted
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Mark that the player has attempted (opened) a chapter's quiz.
+    /// Call this in QuizManager.Start().
+    /// </summary>
+    public void SetQuizAttempted(string chapterName)
+    {
+        switch (chapterName)
+        {
+            case "Chapter1": CurrentSave.quizAttemptedChapter1 = true; break;
+            case "Chapter2": CurrentSave.quizAttemptedChapter2 = true; break;
+            case "Chapter3": CurrentSave.quizAttemptedChapter3 = true; break;
+            case "Chapter4": CurrentSave.quizAttemptedChapter4 = true; break;
+            case "Chapter5": CurrentSave.quizAttemptedChapter5 = true; break;
+            default:
+                Debug.LogWarning("[SaveManager] Unknown chapter for quiz attempted: " + chapterName);
+                return;
+        }
+        SaveGame();
+        Debug.Log("[SaveManager] Quiz attempted: " + chapterName);
+    }
+
+    /// <summary>
+    /// Returns true if the player has ever opened this chapter's quiz.
+    /// </summary>
+    public bool IsQuizAttempted(string chapterName)
+    {
+        return chapterName switch
+        {
+            "Chapter1" => CurrentSave.quizAttemptedChapter1,
+            "Chapter2" => CurrentSave.quizAttemptedChapter2,
+            "Chapter3" => CurrentSave.quizAttemptedChapter3,
+            "Chapter4" => CurrentSave.quizAttemptedChapter4,
+            "Chapter5" => CurrentSave.quizAttemptedChapter5,
+            _ => false
+        };
+    }
+
+    // -----------------------------------------------------------------------
     //  Baby name
     // -----------------------------------------------------------------------
 
@@ -341,6 +419,40 @@ public class SaveManager : MonoBehaviour
     /// <summary>
     /// Returns the saved baby name (empty string if not yet set).
     /// </summary>
+    /// 
+    /// // -----------------------------------------------------------------------
+//  Vaccine choice
+// -----------------------------------------------------------------------
+
+/// <summary>
+/// Save whether the player chose to give vaccines.
+/// true = Give Vaccines
+/// false = Delay Vaccines
+/// </summary>
+public void SetGiveVaccine(bool giveVaccine)
+{
+    CurrentSave.IsGiveVaccine = giveVaccine ? "true" : "false";
+
+    // Choosing "Delay Vaccines" (false) completes Chapter 2
+    if (!giveVaccine)
+    {
+        CurrentSave.chapter2Completed = true;
+        Debug.Log("[SaveManager] Delay Vaccines chosen — chapter2Completed set to true.");
+    }
+
+    SaveGame();
+    Debug.Log("[SaveManager] IsGiveVaccine = " + giveVaccine);
+}
+
+
+
+/// <summary>
+/// Returns the saved vaccine choice.
+/// </summary>
+public string GetGiveVaccine()
+{
+    return CurrentSave.IsGiveVaccine;
+}
     public string GetBabyName() => CurrentSave.babyName;
 
     // -----------------------------------------------------------------------

@@ -607,10 +607,10 @@ RectTransform:
   - {fileID: 803668931}
   m_Father: {fileID: 851234550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -47.32091, y: -130}
+  m_SizeDelta: {x: 587.8582, y: 1000}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &80149666
 MonoBehaviour:
@@ -734,7 +734,7 @@ MonoBehaviour:
   popupParent: {fileID: 0}
   changeParentAfterDialogue: 0
   parentToShow: {fileID: 0}
-  changeSceneAfterDialogue: 0
+  changeSceneAfterDialogue: 1
   nextSceneName: Scene30
 --- !u!1 &239218889
 GameObject:
@@ -1114,10 +1114,10 @@ RectTransform:
   - {fileID: 2034747091}
   m_Father: {fileID: 851234550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -450.32745, y: -98.87842}
+  m_SizeDelta: {x: 590.5697, y: 1181.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &313545993
 MonoBehaviour:
@@ -2119,7 +2119,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.0000019073486, y: -51.7}
+  m_AnchoredPosition: {x: -0.0000019073486, y: -51.69995}
   m_SizeDelta: {x: 474.6921, y: 148.652}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &803668932
@@ -3432,10 +3432,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 851234550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -683.82, y: 32.9619}
+  m_SizeDelta: {x: 1236.0505, y: 65.9238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1426483237
 MonoBehaviour:
@@ -4272,8 +4272,8 @@ MonoBehaviour:
   popupParent: {fileID: 0}
   changeParentAfterDialogue: 1
   parentToShow: {fileID: 1141878645}
-  changeSceneAfterDialogue: 0
-  nextSceneName: 
+  changeSceneAfterDialogue: 1
+  nextSceneName: Scene30
 --- !u!1 &1963537359
 GameObject:
   m_ObjectHideFlags: 0
@@ -4307,10 +4307,10 @@ RectTransform:
   - {fileID: 329783018}
   m_Father: {fileID: 851234550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -658, y: -229.29193}
+  m_SizeDelta: {x: 470.3877, y: 458.5839}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1963537361
 MonoBehaviour:

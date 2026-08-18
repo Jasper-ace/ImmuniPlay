@@ -125,10 +125,11 @@ if (wrong != null)
 
     if (currentQuestion >= questions.Length)
     {
-        // Auto-save quiz score and mark chapter as completed
+        // Auto-save quiz score, mark attempted, and mark chapter as completed
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.SetQuizScore(chapterName, score);
+            SaveManager.Instance.SetQuizAttempted(chapterName);
             SaveManager.Instance.SetChapterCompleted(chapterName);
         }
 

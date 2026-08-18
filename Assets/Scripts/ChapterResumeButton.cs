@@ -45,12 +45,21 @@ public class ChapterResumeButton : MonoBehaviour
 
             if (isCompleted)
             {
-                // Chapter finished — restart from beginning and enter replay mode.
-                // Replay mode freezes per-chapter scene tracking so visiting
-                // Chapter 1 cannot overwrite Chapter 2's saved progress.
-                targetScene = defaultStartScene;
+                // Chapter finished — check if there's a saved replay position first
+                string replayScene = SaveManager.Instance.GetReplayChapterScene(chapterName);
+
+                if (!string.IsNullOrEmpty(replayScene))
+                {
+                    targetScene = replayScene;
+                    Debug.Log("[ChapterResumeButton] " + chapterName + " replay resuming from: " + targetScene);
+                }
+                else
+                {
+                    targetScene = defaultStartScene;
+                    Debug.Log("[ChapterResumeButton] " + chapterName + " replay starting fresh from: " + targetScene);
+                }
+
                 SaveManager.Instance.SetReplayMode(true);
-                Debug.Log("[ChapterResumeButton] " + chapterName + " completed. Replay mode ON. Starting from: " + targetScene);
             }
             else
             {
