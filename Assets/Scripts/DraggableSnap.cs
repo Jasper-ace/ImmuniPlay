@@ -22,30 +22,55 @@ public class DraggableSnap : MonoBehaviour,
     [SerializeField] private CanvasGroup canvasGroup;
 
     [Header("SECOND OBJECT")]
-    [Tooltip("An object (e.g. 'Game 2', which already has its own Pump graphic) to show once snapped. This script does NOT reparent the Sphygmomanometer onto it — it just toggles visibility.")]
+    [Tooltip("An object (e.g. 'Game 2') to show once snapped.")]
     [SerializeField] private GameObject secondObject;
 
     [Header("OBJECT TO HIDE ON SNAP (optional)")]
-    [Tooltip("e.g. 'Game' - hidden when snapped so it looks like it swapped for Second Object. The Sphygmomanometer's own parent is never changed either way.")]
     [SerializeField] private GameObject objectToHide;
 
+    [Header("SNAP SOUND")]
+    [SerializeField] private AudioClip snapSound;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float snapSoundVolume = 1f;
+
+    [Header("TYPEWRITER SOUND")]
+    [SerializeField] private AudioClip typewriterSound;
+
+    [Tooltip("Play the typewriter sound every X characters.")]
+    [SerializeField] private int soundEveryCharacters = 2;
+
+    [Range(0f, 1f)]
+    [Tooltip("Volume of the typewriter sound.")]
+    [SerializeField] private float typewriterVolume = 0.6f;
+
     [Header("DIALOGUE BUBBLE")]
-    [Tooltip("The chat bubble GameObject to show/hide (e.g. a panel with a TMP text inside).")]
     [SerializeField] private GameObject dialogueBubble;
 
     [SerializeField] private TMP_Text dialogueText;
 
-    [TextArea]
-    [SerializeField] private string instructionMessage = "Drag the Sphygmomanometer onto Maria's arm";
+    [Header("DIALOGUE ANIMATIONS")]
+    [Tooltip("Automatically resizes the dialogue bubble based on the text.")]
+    [SerializeField] private DialogueBoxAutoSize autoSize;
+
+    [Tooltip("Plays the pop animation when the dialogue appears.")]
+    [SerializeField] private DialoguePopAnimation popAnimation;
+
+    [Tooltip("Plays the triangle animation when the dialogue appears.")]
+    [SerializeField] private DialogueTriangleAnimation triangleAnimation;
+
+    [Header("DIALOGUE")]
+    [TextArea(2, 5)]
+    [SerializeField] private string instructionMessage =
+        "Drag the Sphygmomanometer onto Maria's arm";
 
     [Tooltip("Seconds between each typed character. Lower = faster typing.")]
     [SerializeField] private float typingSpeed = 0.03f;
 
-    [Tooltip("Seconds to wait after the text finishes typing (or is skipped) before hiding the bubble. Set to 0 to hide immediately.")]
-    [SerializeField] private float autoHideDelay = 1.5f;
-
     private Coroutine typingCoroutine;
+
     private string currentFullMessage;
+
     private bool isTyping;
 
     private RectTransform rectTransform;
@@ -81,7 +106,7 @@ public class DraggableSnap : MonoBehaviour,
 
 
     // =========================================================
-    // START - show the initial instruction bubble
+    // START - SHOW INITIAL INSTRUCTION
     // =========================================================
 
     private void Start()
@@ -91,14 +116,29 @@ public class DraggableSnap : MonoBehaviour,
 
 
     // =========================================================
-    // UPDATE - click anywhere on screen to complete the typing
+    // UPDATE
+    //
+    // TAP 1:
+    // If text is typing -> finish typing
+    //
+    // TAP 2:
+    // If text has finished -> hide dialogue
     // =========================================================
 
     private void Update()
     {
-        if (isTyping && Input.GetMouseButtonDown(0))
+        if (!Input.GetMouseButtonDown(0))
+            return;
+
+        if (isTyping)
         {
+            // First tap finishes the typewriter.
             CompleteTyping();
+        }
+        else
+        {
+            // Second tap hides the dialogue.
+            HideDialogue();
         }
     }
 
@@ -114,7 +154,7 @@ public class DraggableSnap : MonoBehaviour,
 
         if (canvasGroup != null)
         {
-            // Allows the Target to receive the pointer
+            // Allows the Target to receive the pointer.
             canvasGroup.blocksRaycasts = false;
         }
     }
@@ -193,90 +233,247 @@ public class DraggableSnap : MonoBehaviour,
 
 
     // =========================================================
-    // SNAP TO TARGET (stays under its original parent)
+    // SNAP TO TARGET
     // =========================================================
 
     private void SnapToTarget()
     {
-        Debug.Log("SPHYGMOMANOMETER HIT TARGET!");
+        Debug.Log(
+            "SPHYGMOMANOMETER HIT TARGET!"
+        );
 
-        // Snap its own position onto the target, but keep the
-        // same parent/hierarchy position - no SetParent call here.
+        // Snap its own position onto the target.
+        // Parent remains unchanged.
         rectTransform.position = target.position;
-        rectTransform.SetAsLastSibling(); // draw on top of siblings
 
-        // Optionally reveal a second object (e.g. "Game 2" with its own
-        // Pump graphic) instead of moving this one elsewhere.
+
+        // -----------------------------------------------------
+        // PLAY SNAP SOUND
+        // -----------------------------------------------------
+        // Uses AudioManager -> SFXSource.
+        // No AudioSource is needed on this object.
+
+        if (
+            snapSound != null &&
+            AudioManager.Instance != null
+        )
+        {
+            AudioManager.Instance.PlaySFX(
+                snapSound,
+                snapSoundVolume
+            );
+        }
+
+
+        // Draw on top of its siblings.
+        rectTransform.SetAsLastSibling();
+
+
+        // -----------------------------------------------------
+        // SHOW SECOND OBJECT
+        // -----------------------------------------------------
+
         if (secondObject != null)
         {
             secondObject.SetActive(true);
+
+            Debug.Log(
+                "Second Object ENABLED: " +
+                secondObject.name
+            );
         }
 
-        // Optionally hide the old container (e.g. "Game") so it looks like
-        // a swap happened - the Sphygmomanometer's parent is unaffected.
+
+        // -----------------------------------------------------
+        // HIDE OLD OBJECT
+        // -----------------------------------------------------
+
         if (objectToHide != null)
         {
             objectToHide.SetActive(false);
+
+            Debug.Log(
+                "Object To Hide DISABLED: " +
+                objectToHide.name
+            );
         }
+
+
+        // -----------------------------------------------------
+        // MARK AS SNAPPED
+        // -----------------------------------------------------
 
         isSnapped = true;
 
+
+        // -----------------------------------------------------
+        // HIDE DIALOGUE
+        // -----------------------------------------------------
+
         HideDialogue();
 
-        Debug.Log("SPHYGMOMANOMETER SNAPPED IN PLACE (parent unchanged).");
+
+        Debug.Log(
+            "SPHYGMOMANOMETER SNAPPED IN PLACE " +
+            "(parent unchanged)."
+        );
     }
 
 
     // =========================================================
-    // DIALOGUE BUBBLE HELPERS
+    // SHOW DIALOGUE
     // =========================================================
 
     private void ShowDialogue(string message)
     {
-        CancelInvoke(nameof(HideDialogue));
-
         if (dialogueBubble != null)
         {
             dialogueBubble.SetActive(true);
         }
 
+
+        // -----------------------------------------------------
+        // AUTO SIZE
+        // -----------------------------------------------------
+
+        if (autoSize != null)
+        {
+            if (
+                autoSize.enabled &&
+                autoSize.gameObject.activeInHierarchy
+            )
+            {
+                autoSize.ResizeForText(message);
+            }
+        }
+
+
+        // -----------------------------------------------------
+        // POP ANIMATION
+        // -----------------------------------------------------
+
+        if (popAnimation != null)
+        {
+            if (
+                popAnimation.enabled &&
+                popAnimation.gameObject.activeInHierarchy
+            )
+            {
+                popAnimation.PlayPop();
+            }
+        }
+
+
+        // -----------------------------------------------------
+        // TRIANGLE ANIMATION
+        // -----------------------------------------------------
+
+        if (triangleAnimation != null)
+        {
+            if (
+                triangleAnimation.enabled &&
+                triangleAnimation.gameObject.activeInHierarchy
+            )
+            {
+                triangleAnimation.PlayAnimation();
+            }
+        }
+
+
+        // -----------------------------------------------------
+        // TEXT
+        // -----------------------------------------------------
+
         if (dialogueText != null)
         {
             dialogueText.gameObject.SetActive(true);
 
-            currentFullMessage = message;
+            currentFullMessage = message ?? "";
 
             if (typingCoroutine != null)
             {
                 StopCoroutine(typingCoroutine);
             }
 
-            typingCoroutine = StartCoroutine(TypeText(message));
+            typingCoroutine =
+                StartCoroutine(
+                    TypeText(currentFullMessage)
+                );
         }
     }
 
-    private IEnumerator TypeText(string message)
+
+    // =========================================================
+    // TYPEWRITER
+    // =========================================================
+
+   private IEnumerator TypeText(string message)
     {
         isTyping = true;
-        dialogueText.text = "";
 
-        foreach (char c in message)
+        if (dialogueText != null)
         {
-            dialogueText.text += c;
-            yield return new WaitForSeconds(typingSpeed);
+            dialogueText.text = "";
         }
 
-        isTyping = false;
-        typingCoroutine = null;
+        string safeMessage = message ?? "";
 
-        QueueAutoHide();
+        float safeTypingSpeed =
+            Mathf.Max(typingSpeed, 0.001f);
+
+        int characterCount = 0;
+
+        foreach (char c in safeMessage)
+        {
+            if (dialogueText != null)
+            {
+                dialogueText.text += c;
+            }
+
+            // -----------------------------------------------------
+            // TYPEWRITER SOUND
+            // Play sound every X non-space characters
+            // -----------------------------------------------------
+
+            if (!char.IsWhiteSpace(c))
+            {
+                characterCount++;
+
+                if (
+                    typewriterSound != null &&
+                    characterCount %
+                    Mathf.Max(soundEveryCharacters, 1) == 0
+                )
+                {
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlayDialogue(typewriterSound, typewriterVolume);
+                    }
+                }
+            }
+
+            yield return new WaitForSeconds(
+                safeTypingSpeed
+            );
+        }
+
+        // Typing has finished.
+        isTyping = false;
+
+        typingCoroutine = null;
     }
+
+
+    // =========================================================
+    // COMPLETE TYPING
+    // =========================================================
 
     private void CompleteTyping()
     {
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
+
             typingCoroutine = null;
         }
 
@@ -287,22 +484,14 @@ public class DraggableSnap : MonoBehaviour,
 
         isTyping = false;
 
-        QueueAutoHide();
+        // Dialogue stays visible.
+        // The NEXT tap will hide it.
     }
 
-    private void QueueAutoHide()
-    {
-        CancelInvoke(nameof(HideDialogue));
 
-        if (autoHideDelay > 0f)
-        {
-            Invoke(nameof(HideDialogue), autoHideDelay);
-        }
-        else
-        {
-            HideDialogue();
-        }
-    }
+    // =========================================================
+    // HIDE DIALOGUE
+    // =========================================================
 
     private void HideDialogue()
     {

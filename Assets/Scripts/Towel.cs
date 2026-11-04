@@ -86,13 +86,14 @@ public class Towel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHan
     public void OnEndDrag(PointerEventData eventData)
     {
         isDragging = false;
+
         if (towelCanvasGroup != null)
             towelCanvasGroup.alpha = 1f;
 
-        // Reset target color
-        if (targetImage != null)
+        // If the towel did not reach the target, return it to its original position
+        if (!completed && towelRect != null)
         {
-            targetImage.color = new Color(1f, 1f, 1f, 0.5f);
+            towelRect.anchoredPosition = originalPosition;
         }
     }
 

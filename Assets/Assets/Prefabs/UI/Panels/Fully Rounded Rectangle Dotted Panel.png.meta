@@ -1,0 +1,572 @@
+fileFormatVersion: 2
+guid: 3e64fc3765124314fade13baf0c5efc7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8495975576903117699
+    second: Fully Rounded Rectangle Dotted Panel_0
+  - first:
+      213: -4400058070919325439
+    second: Fully Rounded Rectangle Dotted Panel_1
+  - first:
+      213: 4909257746557257274
+    second: Fully Rounded Rectangle Dotted Panel_2
+  - first:
+      213: -6502426530755634156
+    second: Fully Rounded Rectangle Dotted Panel_3
+  - first:
+      213: 5016776377267563927
+    second: Fully Rounded Rectangle Dotted Panel_4
+  - first:
+      213: -8493624421664039636
+    second: Fully Rounded Rectangle Dotted Panel_5
+  - first:
+      213: 1360081702185522464
+    second: Fully Rounded Rectangle Dotted Panel_6
+  - first:
+      213: -2805515982792976541
+    second: Fully Rounded Rectangle Dotted Panel_7
+  - first:
+      213: -232300252637793665
+    second: Fully Rounded Rectangle Dotted Panel_8
+  - first:
+      213: 4041408766969002551
+    second: Fully Rounded Rectangle Dotted Panel_9
+  - first:
+      213: 5849133305126233873
+    second: Fully Rounded Rectangle Dotted Panel_10
+  - first:
+      213: 2949847261131981491
+    second: Fully Rounded Rectangle Dotted Panel_11
+  - first:
+      213: 684165907152572847
+    second: Fully Rounded Rectangle Dotted Panel_12
+  - first:
+      213: 3918677935048094263
+    second: Fully Rounded Rectangle Dotted Panel_13
+  - first:
+      213: 4870694887415348197
+    second: Fully Rounded Rectangle Dotted Panel_14
+  - first:
+      213: 4236703853326430494
+    second: Fully Rounded Rectangle Dotted Panel_15
+  - first:
+      213: 6218281897672214015
+    second: Fully Rounded Rectangle Dotted Panel_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_0
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 175
+        width: 51
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38b64b906c4c7e570800000000000000
+      internalID: 8495975576903117699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_1
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 195
+        width: 51
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10953cb3f7adfe2c0800000000000000
+      internalID: -4400058070919325439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_2
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 195
+        width: 51
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a36416ef8ef212440800000000000000
+      internalID: 4909257746557257274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_3
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 195
+        width: 51
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41c1c38858db2c5a0800000000000000
+      internalID: -6502426530755634156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_4
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 195
+        width: 51
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79daa9cf88b2f9540800000000000000
+      internalID: 5016776377267563927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_5
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 186
+        width: 52
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2dd123f695902a80800000000000000
+      internalID: -8493624421664039636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 118
+        width: 31
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 025d6442a1bffd210800000000000000
+      internalID: 1360081702185522464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_7
+      rect:
+        serializedVersion: 2
+        x: 454
+        y: 139
+        width: 41
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36791f1f31ec019d0800000000000000
+      internalID: -2805515982792976541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 47
+        width: 23
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f727a48a624b6ccf0800000000000000
+      internalID: -232300252637793665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_9
+      rect:
+        serializedVersion: 2
+        x: 486
+        y: 69
+        width: 14
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73a365b7cd7f51830800000000000000
+      internalID: 4041408766969002551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_10
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 0
+        width: 49
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 117a4ff30cb4c2150800000000000000
+      internalID: 5849133305126233873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_11
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 0
+        width: 52
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b24e6d7476ffe820800000000000000
+      internalID: 2949847261131981491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_12
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 9
+        width: 44
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa113478445ae7900800000000000000
+      internalID: 684165907152572847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_13
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 0
+        width: 51
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 732f3b3e1d0f16630800000000000000
+      internalID: 3918677935048094263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_14
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 0
+        width: 51
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ebf3bda13f289340800000000000000
+      internalID: 4870694887415348197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_15
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 0
+        width: 51
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e11fc0425bbcbca30800000000000000
+      internalID: 4236703853326430494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Fully Rounded Rectangle Dotted Panel_16
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 0
+        width: 51
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff58ef7a076cb4650800000000000000
+      internalID: 6218281897672214015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Fully Rounded Rectangle Dotted Panel_0: 8495975576903117699
+      Fully Rounded Rectangle Dotted Panel_1: -4400058070919325439
+      Fully Rounded Rectangle Dotted Panel_10: 5849133305126233873
+      Fully Rounded Rectangle Dotted Panel_11: 2949847261131981491
+      Fully Rounded Rectangle Dotted Panel_12: 684165907152572847
+      Fully Rounded Rectangle Dotted Panel_13: 3918677935048094263
+      Fully Rounded Rectangle Dotted Panel_14: 4870694887415348197
+      Fully Rounded Rectangle Dotted Panel_15: 4236703853326430494
+      Fully Rounded Rectangle Dotted Panel_16: 6218281897672214015
+      Fully Rounded Rectangle Dotted Panel_2: 4909257746557257274
+      Fully Rounded Rectangle Dotted Panel_3: -6502426530755634156
+      Fully Rounded Rectangle Dotted Panel_4: 5016776377267563927
+      Fully Rounded Rectangle Dotted Panel_5: -8493624421664039636
+      Fully Rounded Rectangle Dotted Panel_6: 1360081702185522464
+      Fully Rounded Rectangle Dotted Panel_7: -2805515982792976541
+      Fully Rounded Rectangle Dotted Panel_8: -232300252637793665
+      Fully Rounded Rectangle Dotted Panel_9: 4041408766969002551
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

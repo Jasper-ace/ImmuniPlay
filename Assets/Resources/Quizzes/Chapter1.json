@@ -1,0 +1,121 @@
+{
+  "chapterID": 1,
+  "title": "Chapter 1",
+  "subtitle": "You learned about prenatal care and the importance EPI Vaccines.",
+  "introCharacterPrefab": "Chapter1_Character_Intro",
+  "questions": [
+    {
+      "question": "What is a EPI?",
+
+      "answers": [
+        {
+          "text": "Expanded Program on Immunization",
+          "isCorrect": true
+        },
+        {
+          "text": "Emergency Program for Infants",
+          "isCorrect": false
+        },
+        {
+          "text": "Early Protection for Illness",
+          "isCorrect": false
+        },
+        {
+          "text": "Essential Program for Infants",
+          "isCorrect": false
+        }
+      ],
+
+      "explanation": "EPI or Expanded Program on Immunization is a program that helps protect children from vaccine-preventable diseases."
+    },
+    {
+      "question": "What is a vaccine?",
+
+      "answers": [
+        {
+          "text": "A medicine that helps the body build protection against diseases",
+          "isCorrect": true
+        },
+        {
+          "text": "A medicine that treats a disease after a person gets sick",
+          "isCorrect": false
+        },
+        {
+          "text": "A medicine that prevents a person from getting any illness",
+          "isCorrect": false
+        },
+        {
+          "text": "A medicine that replaces the body's natural immune system",
+          "isCorrect": false
+        }
+      ],
+
+      "explanation": "A vaccine helps the body build protection against specific diseases."
+    }, {
+      "question": "What can happen if a vaccine is delayed?",
+      "answers": [
+        {
+          "text": "The baby may stay unprotected for longer",
+          "isCorrect": true
+        },
+        {
+          "text": "The vaccine will no longer work",
+          "isCorrect": false
+        },
+        {
+          "text": "The baby will become immune to the disease naturally",
+          "isCorrect": false
+        },
+        {
+          "text": "The next vaccine will no longer be needed",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Delaying a vaccine can leave a baby unprotected for longer."
+    }, {
+      "question": "What should parents do if they are unsure about vaccines?",
+
+      "answers": [
+        {
+          "text": "Ask doctors, nurses,or health workers",
+          "isCorrect": true
+        },
+        {
+          "text": "Search random online posts",
+          "isCorrect": false
+        },
+        {
+          "text": "Ignore the information completely",
+          "isCorrect": false
+        },
+        {
+          "text": "Skip vaccinations",
+          "isCorrect": false
+        }
+      ],
+
+      "explanation": "If parents are unsure about vaccines they should ask a healthcare provider for accurate information."
+    }, {
+      "question": "What do vaccines do?",
+      "answers": [
+        {
+          "text": "They lower the risk of getting serious diseases",
+          "isCorrect": true
+        },
+        {
+          "text": "They make a person completely immune to all diseases",
+          "isCorrect": false
+        },
+        {
+          "text": "They guarantee that a person will never get sick",
+          "isCorrect": false
+        },
+        {
+          "text": "They remove the risk of infection completely",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Vaccines do not give complete protection, but they lower the risk of getting and becoming seriously ill from specific diseases."
+    }
+  ]
+}

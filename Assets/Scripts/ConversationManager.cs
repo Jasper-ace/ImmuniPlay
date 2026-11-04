@@ -37,6 +37,10 @@ public class ConversationManager : MonoBehaviour
     [Header("Conversations")]
     public DialogueData[] conversations;
 
+    [Header("Mother Character (for flipping)")]
+    [Tooltip("The mother's character GameObject/Transform. Un-flipped (normal) while she talks to an NPC.")]
+    public Transform motherCharacter;
+
     private int currentConversation;
     private int currentLine;
 
@@ -47,6 +51,15 @@ public class ConversationManager : MonoBehaviour
     private void Start()
     {
         SetEyesActive(false);
+    }
+
+    private void FlipMother(bool flip)
+    {
+        if (motherCharacter == null) return;
+
+        Vector3 scale = motherCharacter.localScale;
+        scale.x = flip ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
+        motherCharacter.localScale = scale;
     }
 
     public void SetEyesActive(bool active)
@@ -81,6 +94,9 @@ public class ConversationManager : MonoBehaviour
         {
             nurseStory.enabled = false;
         }
+
+        // Talking to an NPC now, so make sure she's facing normal (not flipped)
+        FlipMother(false);
 
         // Save the clicked eye
         clickedEye = eye;
@@ -311,13 +327,31 @@ public void NextDialogue()
         // Show remaining active eye buttons
         SetEyesActive(true);
 
-        // Re-enable ChatManagers so the player can continue the main story sequence
+        // Re-enable ChatManagers so the player can continue the main story sequence.
+        // Mother stays facing the NPC direction until the player clicks the screen -
+        // that click (handled inside ChatManagers) is what flips her back.
         ChatManagers chatManagers = FindAnyObjectByType<ChatManagers>();
         if (chatManagers != null)
         {
             chatManagers.enabled = true;
+            chatManagers.QueueMotherFlipBack();
         }
 
         Debug.Log("Conversation Finished");
+    }
+
+    public void StartNPC1Conversation()
+    {
+        StartConversation(0, npc1Eye);
+    }
+
+    public void StartNPC2Conversation()
+    {
+        StartConversation(1, npc2Eye);
+    }
+
+    public void StartNPC3Conversation()
+    {
+        StartConversation(2, npc3Eye);
     }
 }

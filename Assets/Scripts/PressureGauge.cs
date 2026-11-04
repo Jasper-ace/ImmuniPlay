@@ -1,329 +1,902 @@
 using UnityEngine;
+
 using UnityEngine.EventSystems;
+
 using UnityEngine.Events;
+
 using UnityEngine.UI;
+
 using TMPro;
+
 using System.Collections;
 
-// Attach this to the "Pump" GameObject. It needs an Image component
-// (with "Raycast Target" checked) so it can receive clicks.
 public class PressureGauge : MonoBehaviour,
+
     IPointerClickHandler,
+
     IPointerDownHandler,
+
     IPointerUpHandler
+
 {
-    [Header("PUMP IMAGE SWAP")]
-    [Tooltip("The Image component showing the pump (auto-found on this GameObject if left empty).")]
+
+    [Header("GAMEOBJECTS TO SHOW ON DIALOGUE START")]
+
+    [Tooltip("GameObjects to show when the dialogue starts.")]
+
+    [SerializeField] private GameObject[] gameObjectsToShowOnDialogueStart;
+
+    [Header("GAMEOBJECTS TO HIDE ON DIALOGUE START")]
+
+    [Tooltip("GameObjects to hide when the dialogue starts.")]
+
+    [SerializeField] private GameObject[] gameObjectsToHideOnDialogueStart;
+
+    [Header("PUMP IMAGE")]
+
     [SerializeField] private Image pumpImage;
 
-    [Tooltip("Drag the 'not pressed' sprite here.")]
     [SerializeField] private Sprite notPressedSprite;
 
-    [Tooltip("Drag the 'pressed' sprite here.")]
     [SerializeField] private Sprite pressedSprite;
 
-    [Header("GAUGE NEEDLE")]
-    [Tooltip("The needle's RectTransform - it will be rotated around its pivot.")]
+
+    [Header("PUMP SOUND")]
+    [Tooltip("Sound played each time the player taps the pump.")]
+    [SerializeField] private AudioClip pumpSound;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float pumpSoundVolume = 1f;
+
+    [Header("GAUGE")]
+
     [SerializeField] private RectTransform needle;
 
-    [Tooltip("Needle's local Z angle at a reading of 0 (its resting/starting pose).")]
-    [SerializeField] private float needleAngleAtZero = 90f;
+    [Header("NEEDLE TICK SOUND")]
+    [Tooltip("Short tick sound played each time the gauge needle moves.")]
+    [SerializeField] private AudioClip needleTickSound;
 
-    [Tooltip("Exact needle Z angle to animate to after each click, in order. Must have at least Clicks To Reach Target entries, e.g. [-84, -129, -180].")]
-    [SerializeField] private float[] clickAngles = new float[] { -84f, -129f, -180f };
+    [Range(0f, 1f)]
+    [SerializeField] private float needleTickVolume = 1f;
 
-    [Tooltip("The highest number printed on the gauge face (matches your dial artwork, e.g. 300).")]
-    [SerializeField] private float dialMaxValue = 300f;
+    [SerializeField] private float needleAngleAtZero = 0f;
 
-    [Tooltip("Seconds it takes the needle to smoothly sweep from its current angle to the new one per pump.")]
-    [SerializeField] private float needleMoveDuration = 0.4f;
+    [SerializeField] private float[] clickAngles =
+
+    {
+
+        45f,
+
+        90f,
+
+        135f
+
+    };
+
+    [SerializeField] private float dialMaxValue = 120f;
+
+    [SerializeField] private float needleMoveDuration = 0.2f;
 
     [Header("TARGET PRESSURE")]
-    [Tooltip("The reading the needle should reach, e.g. 160.")]
-    [SerializeField] private float targetPressure = 160f;
 
-    [Tooltip("Number of pump clicks needed to reach Target Pressure.")]
+    [SerializeField] private float targetPressure = 120f;
+
     [SerializeField] private int clicksToReachTarget = 3;
 
-    [Header("REVEAL ON TARGET REACHED")]
-    [Tooltip("Optional. Drag a GameObject here to enable it once the target pressure is reached (e.g. after 3 clicks). The pump itself is NOT reparented - it stays exactly where it is.")]
+    [Header("SCENE TRANSITION")]
+
+    [Tooltip("The current GameObject/scene to disable when the target pressure is reached.")]
+
+    [SerializeField] private GameObject objectToDisable;
+
+    [Tooltip("The next GameObject/scene to enable when the target pressure is reached.")]
+
     [SerializeField] private GameObject objectToEnable;
 
     [Header("EVENTS")]
-    [Tooltip("Fired once, the moment the target pressure is reached.")]
-    [SerializeField] private UnityEvent onTargetReached;
 
-    [Tooltip("Fired on every click, passing the current reading (0..targetPressure).")]
-    [SerializeField] private UnityEvent<float> onPump;
+    public UnityEvent onTargetReached;
 
-    [Header("DIALOGUE BUBBLE")]
-    [Tooltip("The chat bubble GameObject to show/hide (e.g. a panel with a TMP text inside).")]
+    public UnityEvent onPump;
+
+    [Header("DIALOGUE")]
+
     [SerializeField] private GameObject dialogueBubble;
 
     [SerializeField] private TMP_Text dialogueText;
 
-    [TextArea]
-    [SerializeField] private string instructionMessage = "Tap the pump 3 times to inflate the cuff.";
+    [Header("DIALOGUE ANIMATIONS")]
 
-    [Tooltip("Seconds between each typed character. Lower = faster typing.")]
+    [Tooltip("Automatically resizes the dialogue bubble.")]
+
+    [SerializeField] private DialogueBoxAutoSize autoSize;
+
+    [Tooltip("Pop animation for the dialogue bubble.")]
+
+    [SerializeField] private DialoguePopAnimation popAnimation;
+
+    [Tooltip("Triangle animation for the dialogue bubble.")]
+
+    [SerializeField] private DialogueTriangleAnimation triangleAnimation;
+
+    [Header("GAMEOBJECTS TO HIDE AFTER DIALOGUE")]
+
+    [Tooltip("GameObjects to hide when the dialogue is dismissed.")]
+
+    [SerializeField] private GameObject[] gameObjectsToHideAfterDialogue;
+
+    [TextArea]
+
+    [SerializeField]
+
+    private string instructionMessage =
+
+        "Tap the pump 3 times to inflate the cuff.";
+
     [SerializeField] private float typingSpeed = 0.03f;
 
-    [Tooltip("Seconds to wait after the text finishes typing (or is skipped) before hiding the bubble. Set to 0 to hide immediately.")]
-    [SerializeField] private float autoHideDelay = 1.5f;
+    [Header("TYPEWRITER SOUND")]
+
+    [SerializeField] private AudioClip typewriterSound;
+
+    [Tooltip("Play the typewriter sound every X non-space characters.")]
+
+    [SerializeField] private int soundEveryCharacters = 2;
+
+    [Range(0f, 1f)]
+
+    [SerializeField] private float typewriterVolume = 0.25f;
+
+    // State
 
     private Coroutine typingCoroutine;
+
     private string currentFullMessage;
+
     private bool isTyping;
-    private bool canInteract = false;
+
+    private bool canInteract;
 
     private int clickCount;
+
     private float currentPressure;
+
     private bool targetReached;
+
     private Coroutine needleCoroutine;
 
+    private bool needleMoving;
+
+
+
     private void Awake()
+
     {
+
+        // Find pump image automatically if not assigned
+
         if (pumpImage == null)
+
         {
+
             pumpImage = GetComponent<Image>();
+
         }
 
-        if (pumpImage != null && notPressedSprite != null)
+        // Store original pump sprite
+
+        if (pumpImage != null && notPressedSprite == null)
+
         {
-            pumpImage.sprite = notPressedSprite;
+
+            notPressedSprite = pumpImage.sprite;
+
         }
 
-        // Force the needle to its known "reading = 0" pose so the very
-        // first click always sweeps from a consistent starting angle,
-        // regardless of whatever rotation was left on it in the Editor.
+        // Reset gauge
+
         if (needle != null)
+
         {
-            needle.localEulerAngles = new Vector3(0f, 0f, needleAngleAtZero);
+
+            needle.localRotation =
+
+                Quaternion.Euler(0f, 0f, needleAngleAtZero);
+
         }
+
+    }
+
+    private void ApplyDialogueStartGameObjects()
+
+    {
+
+        if (gameObjectsToHideOnDialogueStart != null)
+
+        {
+
+            foreach (GameObject obj in gameObjectsToHideOnDialogueStart)
+
+            {
+
+                if (obj != null)
+
+                    obj.SetActive(false);
+
+            }
+
+        }
+
+        if (gameObjectsToShowOnDialogueStart != null)
+
+        {
+
+            foreach (GameObject obj in gameObjectsToShowOnDialogueStart)
+
+            {
+
+                if (obj != null)
+
+                    obj.SetActive(true);
+
+            }
+
+        }
+
     }
 
     private void Start()
+
     {
+
         ShowDialogue(instructionMessage);
+
     }
 
-    private void Update()
+    // Called by the DialogueInput UI Button.
+
+    // This replaces screen-wide mouse/touch input so tapping other UI
+
+    // elements (such as a hamburger/menu button) will not advance dialogue.
+
+    public void AdvanceDialogue()
+
     {
-        if (!Input.GetMouseButtonDown(0))
-            return;
 
         if (isTyping)
+
         {
+
             CompleteTyping();
+
+            return;
+
         }
-        else if (dialogueBubble != null && dialogueBubble.activeSelf)
+
+        if (dialogueBubble != null && dialogueBubble.activeSelf)
+
         {
+
             CancelInvoke(nameof(HideDialogue));
+
             HideDialogue();
+
         }
+
     }
 
+    // --------------------------------------------------
+
+    // PUMP PRESS
+
+    // --------------------------------------------------
+
     public void OnPointerDown(PointerEventData eventData)
+
     {
-        if (!canInteract)
+
+        if (!canInteract || targetReached || needleMoving)
+
             return;
 
         if (pumpImage != null && pressedSprite != null)
+
         {
+
             pumpImage.sprite = pressedSprite;
+
         }
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
+
     {
-        if (!canInteract)
+
+        if (targetReached)
+
             return;
 
         if (pumpImage != null && notPressedSprite != null)
+
         {
+
             pumpImage.sprite = notPressedSprite;
+
         }
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
+
     {
-        if (!canInteract || targetReached)
+
+        if (!canInteract || targetReached || needleMoving)
+
             return;
 
         clickCount++;
 
-        float step = targetPressure / clicksToReachTarget;
-        currentPressure = Mathf.Min(targetPressure, step * clickCount);
 
-        UpdateNeedle();
-        onPump?.Invoke(currentPressure);
+        // Play the pump sound through AudioManager so it follows the game's SFX volume.
+        if (pumpSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(pumpSound, pumpSoundVolume);
+        }
 
+        // Calculate pressure
+
+        currentPressure =
+
+            (targetPressure / clicksToReachTarget) * clickCount;
+
+        currentPressure =
+
+            Mathf.Clamp(currentPressure, 0f, dialMaxValue);
+
+        // Check target before starting the needle animation so the final
+        // animation is the one that controls the scene/object transition.
         if (clickCount >= clicksToReachTarget)
         {
+            currentPressure = targetPressure;
             targetReached = true;
-            onTargetReached?.Invoke();
-            Debug.Log("PressureGauge: target of " + targetPressure + " reached after " + clickCount + " clicks.");
+        }
+
+        UpdateNeedle();
+
+        // Trigger pump event
+
+        onPump?.Invoke();
+
+    }
+
+    // --------------------------------------------------
+
+    // NEEDLE
+
+    // --------------------------------------------------
+
+    private void UpdateNeedle()
+
+    {
+
+        if (needle == null)
+        {
+            FinishNeedleMovement();
+            return;
+        }
+
+        float targetAngle;
+
+        if (clickCount <= 0)
+
+        {
+
+            targetAngle = needleAngleAtZero;
+
+        }
+
+        else
+
+        {
+
+            int angleIndex =
+
+                Mathf.Clamp(clickCount - 1, 0, clickAngles.Length - 1);
+
+            targetAngle = clickAngles[angleIndex];
+
+        }
+
+        if (needleCoroutine != null)
+        {
+            StopCoroutine(needleCoroutine);
+        }
+
+        needleMoving = true;
+
+        needleCoroutine =
+
+            StartCoroutine(
+
+                AnimateNeedle(targetAngle)
+
+            );
+
+    }
+
+    private IEnumerator AnimateNeedle(float targetAngle)
+
+    {
+
+        float startAngle =
+
+            needle.localEulerAngles.z;
+
+        // Play one short tick through AudioManager when the needle starts moving.
+        if (needleTickSound != null &&
+            Mathf.Abs(Mathf.DeltaAngle(startAngle, targetAngle)) > 0.01f)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX(
+                    needleTickSound,
+                    needleTickVolume
+                );
+            }
+        }
+
+        // Convert 0-360 to -180 to 180
+
+        if (startAngle > 180f)
+
+            startAngle -= 360f;
+
+        float elapsed = 0f;
+
+        while (elapsed < needleMoveDuration)
+
+        {
+
+            elapsed += Time.deltaTime;
+
+            float t =
+
+                Mathf.Clamp01(
+
+                    elapsed / needleMoveDuration
+
+                );
+
+            // Smooth movement
+
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            float currentAngle =
+
+                Mathf.Lerp(
+
+                    startAngle,
+
+                    targetAngle,
+
+                    t
+
+                );
+
+            needle.localRotation =
+
+                Quaternion.Euler(
+
+                    0f,
+
+                    0f,
+
+                    currentAngle
+
+                );
+
+            yield return null;
+
+        }
+
+        needle.localRotation =
+
+            Quaternion.Euler(
+
+                0f,
+
+                0f,
+
+                targetAngle
+
+            );
+
+        needleCoroutine = null;
+        needleMoving = false;
+
+        FinishNeedleMovement();
+
+    }
+
+    private void FinishNeedleMovement()
+    {
+        needleMoving = false;
+
+        // Do not change scene/object until the final needle animation is complete.
+        if (targetReached)
+        {
+            if (objectToDisable != null)
+            {
+                objectToDisable.SetActive(false);
+            }
 
             if (objectToEnable != null)
             {
                 objectToEnable.SetActive(true);
-                Debug.Log("PressureGauge: enabled " + objectToEnable.name + ". Pump's own parent is unchanged.");
             }
-        }
-    }
 
-    private void UpdateNeedle()
-    {
-        if (needle == null)
+            onTargetReached?.Invoke();
+            canInteract = false;
             return;
-
-        float targetAngle = needleAngleAtZero;
-
-        if (clickAngles != null && clickAngles.Length > 0)
-        {
-            int index = Mathf.Clamp(clickCount - 1, 0, clickAngles.Length - 1);
-            targetAngle = clickAngles[index];
         }
 
-        if (needleCoroutine != null)
-        {
-            StopCoroutine(needleCoroutine);
-        }
-
-        needleCoroutine = StartCoroutine(AnimateNeedle(targetAngle));
+        // Allow the next pump only after the needle has finished moving.
+        canInteract = true;
     }
 
-    private IEnumerator AnimateNeedle(float targetAngle)
-    {
-        float startAngle = needle.localEulerAngles.z;
-        float elapsed = 0f;
+    // --------------------------------------------------
 
-        while (elapsed < needleMoveDuration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / needleMoveDuration);
-            // ease-out so it settles smoothly instead of stopping abruptly
-            progress = 1f - Mathf.Pow(1f - progress, 3f);
+    // RESET
 
-            float angle = Mathf.LerpAngle(startAngle, targetAngle, progress);
-            needle.localEulerAngles = new Vector3(0f, 0f, angle);
+    // --------------------------------------------------
 
-            yield return null;
-        }
-
-        needle.localEulerAngles = new Vector3(0f, 0f, targetAngle);
-        needleCoroutine = null;
-    }
-
-    // Call this (e.g. from a "Reset" button) to start the gauge over.
     public void ResetGauge()
+
     {
-        if (needleCoroutine != null)
-        {
-            StopCoroutine(needleCoroutine);
-            needleCoroutine = null;
-        }
 
         clickCount = 0;
+
         currentPressure = 0f;
+
         targetReached = false;
 
-        if (needle != null)
+        canInteract = false;
+
+        if (pumpImage != null &&
+
+            notPressedSprite != null)
+
         {
-            needleCoroutine = StartCoroutine(AnimateNeedle(needleAngleAtZero));
+
+            pumpImage.sprite = notPressedSprite;
+
         }
+
+        if (needleCoroutine != null)
+
+        {
+
+            StopCoroutine(needleCoroutine);
+
+            needleCoroutine = null;
+
+        }
+
+        if (needle != null)
+
+        {
+
+            needle.localRotation =
+
+                Quaternion.Euler(
+
+                    0f,
+
+                    0f,
+
+                    needleAngleAtZero
+
+                );
+
+        }
+
+        ShowDialogue(instructionMessage);
+
     }
 
+    // --------------------------------------------------
 
-    // =========================================================
-    // DIALOGUE BUBBLE HELPERS
-    // =========================================================
+    // DIALOGUE
 
-    private void ShowDialogue(string message)
+    // --------------------------------------------------
+
+    public void ShowDialogue(string message)
+
     {
+
+        if (dialogueBubble == null ||
+
+            dialogueText == null)
+
+        {
+
+            return;
+
+        }
+
         CancelInvoke(nameof(HideDialogue));
 
-        if (dialogueBubble != null)
+        ApplyDialogueStartGameObjects();
+
+        dialogueBubble.SetActive(true);
+
+        dialogueText.text = "";
+
+        currentFullMessage = message;
+
+        canInteract = false;
+
+        if (typingCoroutine != null)
+
         {
-            dialogueBubble.SetActive(true);
+
+            StopCoroutine(typingCoroutine);
+
         }
 
-        if (dialogueText != null)
+        // Prepare the bubble before typing:
+
+        // auto-resize, pop animation, and triangle animation.
+
+        PrepareDialogue(message);
+
+        typingCoroutine =
+
+            StartCoroutine(
+
+                TypeText(message)
+
+            );
+
+    }
+
+    private void PrepareDialogue(string text)
+
+    {
+
+        // -----------------------------------------------------
+
+        // AUTO SIZE
+
+        // -----------------------------------------------------
+
+        if (autoSize != null)
+
         {
-            dialogueText.gameObject.SetActive(true);
 
-            currentFullMessage = message;
+            if (
 
-            if (typingCoroutine != null)
+                autoSize.enabled &&
+
+                autoSize.gameObject.activeInHierarchy
+
+            )
+
             {
-                StopCoroutine(typingCoroutine);
+
+                autoSize.ResizeForText(text);
+
             }
 
-            typingCoroutine = StartCoroutine(TypeText(message));
         }
+
+        // -----------------------------------------------------
+
+        // POP
+
+        // -----------------------------------------------------
+
+        if (popAnimation != null)
+
+        {
+
+            if (
+
+                popAnimation.enabled &&
+
+                popAnimation.gameObject.activeInHierarchy
+
+            )
+
+            {
+
+                popAnimation.PlayPop();
+
+            }
+
+        }
+
+        // -----------------------------------------------------
+
+        // TRIANGLE
+
+        // -----------------------------------------------------
+
+        if (triangleAnimation != null)
+
+        {
+
+            if (
+
+                triangleAnimation.enabled &&
+
+                triangleAnimation.gameObject.activeInHierarchy
+
+            )
+
+            {
+
+                triangleAnimation.PlayAnimation();
+
+            }
+
+        }
+
     }
 
     private IEnumerator TypeText(string message)
+
     {
+
         isTyping = true;
-        dialogueText.text = "";
+
+        int characterCount = 0;
+
+        if (dialogueText != null)
+
+        {
+
+            dialogueText.text = "";
+
+        }
 
         foreach (char c in message)
+
         {
-            dialogueText.text += c;
+
+            if (dialogueText != null)
+
+            {
+
+                dialogueText.text += c;
+
+            }
+
+            // Count only non-space characters.
+
+            // The sound plays every X characters, like SingleCharDialogue.
+
+            if (!char.IsWhiteSpace(c))
+
+            {
+
+                characterCount++;
+
+                if (typewriterSound != null &&
+
+                    soundEveryCharacters > 0 &&
+
+                    characterCount % soundEveryCharacters == 0)
+
+                {
+
+                    // Play through AudioManager so the dialogue volume
+
+                    // follows the game's Dialogue Volume setting.
+
+                    if (AudioManager.Instance != null)
+
+                    {
+
+                        AudioManager.Instance.PlayDialogue(
+
+                            typewriterSound,
+
+                            typewriterVolume
+
+                        );
+
+                    }
+
+                }
+
+            }
+
+            // typingSpeed only controls how fast the text appears.
+
             yield return new WaitForSeconds(typingSpeed);
+
         }
 
         isTyping = false;
+
         typingCoroutine = null;
 
-        QueueAutoHide();
     }
 
     private void CompleteTyping()
+
     {
+
+        if (!isTyping)
+
+            return;
+
         if (typingCoroutine != null)
+
         {
+
             StopCoroutine(typingCoroutine);
+
             typingCoroutine = null;
+
         }
 
         if (dialogueText != null)
+
         {
+
             dialogueText.text = currentFullMessage;
+
         }
 
         isTyping = false;
 
-        QueueAutoHide();
-    }
-
-    private void QueueAutoHide()
-    {
-        CancelInvoke(nameof(HideDialogue));
-
-        if (autoHideDelay > 0f)
-        {
-            Invoke(nameof(HideDialogue), autoHideDelay);
-        }
-        else
-        {
-            HideDialogue();
-        }
     }
 
     private void HideDialogue()
+
     {
+
+        CancelInvoke(nameof(HideDialogue));
+
         if (dialogueBubble != null)
+
         {
+
             dialogueBubble.SetActive(false);
+
         }
 
         if (dialogueText != null)
+
         {
-            dialogueText.gameObject.SetActive(false);
+
+            dialogueText.text = "";
+
+        }
+
+        // Hide selected GameObjects after the dialogue is dismissed.
+
+        if (gameObjectsToHideAfterDialogue != null)
+
+        {
+
+            foreach (GameObject obj in gameObjectsToHideAfterDialogue)
+
+            {
+
+                if (obj != null)
+
+                    obj.SetActive(false);
+
+            }
+
         }
 
         canInteract = true;
+
     }
+
 }

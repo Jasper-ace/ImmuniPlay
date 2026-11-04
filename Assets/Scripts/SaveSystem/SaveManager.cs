@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,6 +14,7 @@ using UnityEngine.SceneManagement;
 /// Quiz score         : SaveManager.Instance.SetQuizScore("Chapter1", 10);
 /// Baby name          : SaveManager.Instance.SetBabyName("Sophia");
 /// Load saved scene   : SaveManager.Instance.LoadSavedScene();
+/// Video watched      : SaveManager.Instance.MarkVideoViewed("chapter1_intro");
 /// </summary>
 public class SaveManager : MonoBehaviour
 {
@@ -79,11 +81,26 @@ public class SaveManager : MonoBehaviour
     /// <summary>
     /// Called by ChapterResumeButton to tell SaveManager which chapter
     /// the player is about to enter. Used to save per-chapter progress.
+    /// Also immediately syncs currentScene to that chapter's last saved
+    /// scene (or empty if the chapter was never started), so the value
+    /// is always chapter-scoped from the moment a chapter is selected.
     /// </summary>
     public void SetActiveChapter(string chapterName)
     {
         _activeChapter = chapterName;
-        Debug.Log("[SaveManager] Active chapter set to: " + chapterName);
+
+        // Sync currentScene to the selected chapter's progress slot.
+        // This ensures currentScene == "" for chapters with no saved scene,
+        // and currentScene == lastSceneChapterX for chapters that were started.
+        // Replay mode is excluded — during replay, currentScene is not updated.
+        if (!_isReplayMode)
+        {
+            CurrentSave.currentScene = GetChapterScene(chapterName);
+            SaveGame();
+        }
+
+        Debug.Log("[SaveManager] Active chapter set to: " + chapterName
+            + " | currentScene: " + CurrentSave.currentScene);
     }
 
     /// <summary>
@@ -129,6 +146,97 @@ public class SaveManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Clears the saved scene for a chapter.
+    /// Used when a chapter has been completely finished,
+    /// so replaying the chapter starts from the beginning.
+    /// </summary>
+    /// TODO: added this
+    public void ClearChapterScene(string chapterName)
+    {
+        switch (chapterName)
+        {
+            case "Chapter1":
+                CurrentSave.lastSceneChapter1 = "";
+                break;
+
+            case "Chapter2":
+                CurrentSave.lastSceneChapter2 = "";
+                break;
+
+            case "Chapter3":
+                CurrentSave.lastSceneChapter3 = "";
+                break;
+
+            case "Chapter4":
+                CurrentSave.lastSceneChapter4 = "";
+                break;
+
+            case "Chapter5":
+                CurrentSave.lastSceneChapter5 = "";
+                break;
+
+            default:
+                Debug.LogWarning(
+                    "[SaveManager] Cannot clear scene. Unknown chapter: "
+                    + chapterName
+                );
+                return;
+        }
+
+        SaveGame();
+
+        Debug.Log(
+            "[SaveManager] Cleared saved scene for "
+            + chapterName
+        );
+    }
+
+    /// <summary>
+    /// Clears the saved replay-scene checkpoint for a chapter.
+    /// Called when a chapter replay is completed so that the
+    /// next replay always starts fresh from the beginning.
+    /// </summary>
+    public void ClearReplayChapterScene(string chapterName)
+    {
+        switch (chapterName)
+        {
+            case "Chapter1":
+                CurrentSave.lastSceneReplayChapter1 = "";
+                break;
+
+            case "Chapter2":
+                CurrentSave.lastSceneReplayChapter2 = "";
+                break;
+
+            case "Chapter3":
+                CurrentSave.lastSceneReplayChapter3 = "";
+                break;
+
+            case "Chapter4":
+                CurrentSave.lastSceneReplayChapter4 = "";
+                break;
+
+            case "Chapter5":
+                CurrentSave.lastSceneReplayChapter5 = "";
+                break;
+
+            default:
+                Debug.LogWarning(
+                    "[SaveManager] Cannot clear replay scene. Unknown chapter: "
+                    + chapterName
+                );
+                return;
+        }
+
+        SaveGame();
+
+        Debug.Log(
+            "[SaveManager] Cleared replay scene for "
+            + chapterName
+        );
+    }
+
+    /// <summary>
     /// Save the last scene reached while replaying a completed chapter.
     /// </summary>
     public void SaveReplayChapterScene(string chapterName, string sceneName)
@@ -166,11 +274,22 @@ public class SaveManager : MonoBehaviour
 
     /// <summary>
     /// Fires automatically whenever any scene finishes loading.
-    /// Updates both the global currentScene (CONTINUE button) and
-    /// the per-chapter last scene (chapter buttons).
+    /// Updates the per-chapter last scene (chapter buttons) and derives
+    /// currentScene from the active chapter's progress slot so that
+    /// currentScene always reflects lastSceneChapterX for the selected
+    /// chapter — never a scene from a different chapter.
     /// </summary>
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Do not save navigation/progress when entering ChapterQuiz.
+        // The previous gameplay scene should remain the resume point.
+        if (IsNonSaveScene(scene.name))
+        {
+            Debug.Log("[SaveManager] " + scene.name + " loaded — scene progress NOT saved.");
+            return;
+        }
+
+        // Hub scenes
         if (IsHubScene(scene.name))
         {
             // Player returned to hub — clear chapter tracking and replay mode
@@ -179,24 +298,30 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        // Global resume point (used by CONTINUE button)
-        CurrentSave.currentScene = scene.name;
-
         if (!string.IsNullOrEmpty(_activeChapter))
         {
             if (_isReplayMode)
-                // Replay mode — save to replay slot, not the main progress slot
+            {
+                // Replay mode — save to replay slot only; do not touch currentScene
                 SaveReplayChapterScene(_activeChapter, scene.name);
+            }
             else
-                // Normal play — save to main progress slot
+            {
+                // Normal play — save to the chapter's progress slot
                 SaveChapterScene(_activeChapter, scene.name);
+
+                // currentScene always mirrors the active chapter's progress slot,
+                // so CONTINUE resumes the correct chapter (not another chapter's scene)
+                CurrentSave.currentScene = GetChapterScene(_activeChapter);
+            }
         }
 
         SaveGame();
 
         Debug.Log("[SaveManager] Scene saved: " + scene.name
             + " | Chapter: " + (_activeChapter == "" ? "none" : _activeChapter)
-            + " | Replay: " + _isReplayMode);
+            + " | Replay: " + _isReplayMode
+            + " | currentScene: " + CurrentSave.currentScene);
     }
 
     /// <summary>
@@ -205,11 +330,24 @@ public class SaveManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         string active = SceneManager.GetActiveScene().name;
-        if (!IsHubScene(active))
+
+        // Never save ChapterQuiz as a resume point
+        if (active == "ChapterQuiz")
         {
-            CurrentSave.currentScene = active;
+            Debug.Log("[SaveManager] Game quitting from ChapterQuiz — keeping previous scene.");
+            return;
+        }
+
+        if (!IsHubScene(active) && !IsNonSaveScene(active))
+        {
             if (!string.IsNullOrEmpty(_activeChapter) && !_isReplayMode)
+            {
                 SaveChapterScene(_activeChapter, active);
+
+                // Keep currentScene in sync with the active chapter's slot
+                CurrentSave.currentScene = GetChapterScene(_activeChapter);
+            }
+
             SaveGame();
         }
     }
@@ -222,11 +360,24 @@ public class SaveManager : MonoBehaviour
         if (!isPaused) return;
 
         string active = SceneManager.GetActiveScene().name;
-        if (!IsHubScene(active))
+
+        // Never save ChapterQuiz as a resume point
+        if (active == "ChapterQuiz")
         {
-            CurrentSave.currentScene = active;
+            Debug.Log("[SaveManager] App paused in ChapterQuiz — keeping previous scene.");
+            return;
+        }
+
+        if (!IsHubScene(active) && !IsNonSaveScene(active))
+        {
             if (!string.IsNullOrEmpty(_activeChapter) && !_isReplayMode)
+            {
                 SaveChapterScene(_activeChapter, active);
+
+                // Keep currentScene in sync with the active chapter's slot
+                CurrentSave.currentScene = GetChapterScene(_activeChapter);
+            }
+
             SaveGame();
         }
     }
@@ -239,7 +390,16 @@ public class SaveManager : MonoBehaviour
     {
         return string.IsNullOrEmpty(sceneName)
             || sceneName == "TitleScene"
-            || sceneName == "Chapters";
+            || sceneName == "ChaptersScene";
+    }
+
+    private bool IsNonSaveScene(string sceneName)
+    {
+        return string.IsNullOrEmpty(sceneName)
+            || sceneName == "TitleScene"
+            || sceneName == "ChaptersScene"
+            || sceneName == "ChapterQuiz"
+            || sceneName == "Scene15";
     }
 
 
@@ -416,44 +576,80 @@ public class SaveManager : MonoBehaviour
         SaveGame();
     }
 
+    public void SetTermsAccepted()
+    {
+        CurrentSave.termsAccepted = true;
+        SaveGame();
+    }
+
+    // -----------------------------------------------------------------------
+    //  Vaccine choice
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Save whether the player chose to give vaccines.
+    /// true = Give Vaccines
+    /// false = Delay Vaccines
+    /// </summary>
+    public void SetGiveVaccine(bool giveVaccine)
+    {
+        CurrentSave.IsGiveVaccine = giveVaccine ? "true" : "false";
+
+        // Choosing "Delay Vaccines" (false) completes Chapter 2
+        if (!giveVaccine)
+        {
+            CurrentSave.chapter2Completed = true;
+            Debug.Log("[SaveManager] Delay Vaccines chosen — chapter2Completed set to true.");
+        }
+
+        SaveGame();
+        Debug.Log("[SaveManager] IsGiveVaccine = " + giveVaccine);
+    }
+
+    /// <summary>
+    /// Returns the saved vaccine choice.
+    /// </summary>
+    public string GetGiveVaccine()
+    {
+        return CurrentSave.IsGiveVaccine;
+    }
+
     /// <summary>
     /// Returns the saved baby name (empty string if not yet set).
     /// </summary>
-    /// 
-    /// // -----------------------------------------------------------------------
-//  Vaccine choice
-// -----------------------------------------------------------------------
+    public string GetBabyName() => CurrentSave.babyName;
 
-/// <summary>
-/// Save whether the player chose to give vaccines.
-/// true = Give Vaccines
-/// false = Delay Vaccines
-/// </summary>
-public void SetGiveVaccine(bool giveVaccine)
-{
-    CurrentSave.IsGiveVaccine = giveVaccine ? "true" : "false";
+    // -----------------------------------------------------------------------
+    //  Gallery videos
+    // -----------------------------------------------------------------------
 
-    // Choosing "Delay Vaccines" (false) completes Chapter 2
-    if (!giveVaccine)
+    /// <summary>
+    /// Marks a video as viewed (unlocking it in the Gallery) and saves.
+    /// Safe to call multiple times — won't add duplicates.
+    /// </summary>
+    public void MarkVideoViewed(string videoId)
     {
-        CurrentSave.chapter2Completed = true;
-        Debug.Log("[SaveManager] Delay Vaccines chosen — chapter2Completed set to true.");
+        if (string.IsNullOrEmpty(videoId))
+        {
+            Debug.LogWarning("[SaveManager] MarkVideoViewed called with empty videoId.");
+            return;
+        }
+
+        if (!CurrentSave.viewedVideos.Contains(videoId))
+        {
+            CurrentSave.viewedVideos.Add(videoId);
+            SaveGame();
+            Debug.Log("[SaveManager] Video marked as viewed: " + videoId);
+        }
     }
 
-    SaveGame();
-    Debug.Log("[SaveManager] IsGiveVaccine = " + giveVaccine);
-}
-
-
-
-/// <summary>
-/// Returns the saved vaccine choice.
-/// </summary>
-public string GetGiveVaccine()
-{
-    return CurrentSave.IsGiveVaccine;
-}
-    public string GetBabyName() => CurrentSave.babyName;
+    /// <summary>
+    /// Returns true if the player has watched this video before.
+    /// </summary>
+    public bool IsVideoViewed(string videoId)
+    {
+        return CurrentSave.viewedVideos.Contains(videoId);
+    }
 
     // -----------------------------------------------------------------------
     //  Core IO

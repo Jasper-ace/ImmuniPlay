@@ -1,0 +1,30 @@
+{
+    "miniGameID": "Chapter3MythFact",
+    "statements": [
+        {
+            "statement": "Vaccines can make us sick.",
+            "correctAnswer": "Myth",
+            "explanation": "Vaccines help protect us from serious diseases by teaching our immune system how to fight them."
+        },
+        {
+            "statement": "Babies need vaccines to help protect them from serious diseases.",
+            "correctAnswer": "Fact",
+            "explanation": "Vaccines help protect babies from several serious and potentially life-threatening diseases."
+        },
+        {
+            "statement": "A healthy-looking baby does not need vaccines.",
+            "correctAnswer": "Myth",
+            "explanation": "Even healthy babies need vaccines because they can still be exposed to vaccine-preventable diseases."
+        },
+        {
+            "statement": "Vaccination can help protect other people in the community.",
+            "correctAnswer": "Fact",
+            "explanation": "Vaccination can reduce the spread of certain vaccine-preventable diseases and help protect people in the community."
+        },
+        {
+            "statement": "It is okay to skip a baby's recommended vaccines if the baby looks healthy.",
+            "correctAnswer": "Myth",
+            "explanation": "Vaccines are recommended according to a schedule to provide babies with protection at the appropriate time."
+        }
+    ]
+}

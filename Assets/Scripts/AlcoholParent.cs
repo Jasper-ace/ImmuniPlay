@@ -25,6 +25,7 @@ public class AlcoholParent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     // STATE
     //====================================================
     private Vector3 originalPosition;
+    private Vector2 dragOffset;
     private bool isDragging = false;
     private float rubbingTimeElapsed = 0f;
     private bool isOverTarget = false;
@@ -67,24 +68,53 @@ public class AlcoholParent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     //====================================================
     // DRAG HANDLERS
     //====================================================
-    public void OnBeginDrag(PointerEventData eventData)
+   public void OnBeginDrag(PointerEventData eventData)
     {
         if (completed)
             return;
 
         isDragging = true;
         alcoholWipeCanvasGroup.alpha = 0.85f;
+
+        // Keep the wipe under the exact point where the player touched it
+        RectTransform parentRect = alcoholWipeRect.parent as RectTransform;
+
+        if (parentRect != null)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentRect,
+                eventData.position,
+                eventData.pressEventCamera,
+                out Vector2 localPoint
+            );
+
+            // Preserve the offset between finger and wipe center
+            dragOffset = alcoholWipeRect.anchoredPosition - localPoint;
+        }
     }
+
 
     public void OnDrag(PointerEventData eventData)
     {
         if (completed || !isDragging)
             return;
 
-        // Move the alcohol wipe with the mouse
-        alcoholWipeRect.anchoredPosition += eventData.delta;
+        RectTransform parentRect = alcoholWipeRect.parent as RectTransform;
 
-        // Check if wipe is over target using world positions
+        if (parentRect != null)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentRect,
+                eventData.position,
+                eventData.pressEventCamera,
+                out Vector2 localPoint
+            );
+
+            alcoholWipeRect.anchoredPosition =
+                localPoint + dragOffset;
+        }
+
+        // Check if wipe is over target
         if (targetArea != null)
         {
             float distanceToTarget = Vector3.Distance(
@@ -94,16 +124,17 @@ public class AlcoholParent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
             isOverTarget = distanceToTarget < targetProximity;
 
-            // Visual feedback - highlight target
             if (targetImage != null)
             {
                 if (isOverTarget)
                 {
-                    targetImage.color = new Color(1f, 0.5f, 0.5f, 0.7f); // Red tint
+                    targetImage.color =
+                        new Color(1f, 0.5f, 0.5f, 0.7f);
                 }
                 else
                 {
-                    targetImage.color = new Color(1f, 1f, 1f, 0.5f); // Default
+                    targetImage.color =
+                        new Color(1f, 1f, 1f, 0.5f);
                 }
             }
         }

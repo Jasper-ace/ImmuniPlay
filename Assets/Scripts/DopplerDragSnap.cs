@@ -3,200 +3,718 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 
-public class DopplerDragSnap : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DopplerDragSnap : MonoBehaviour,
+    IBeginDragHandler,
+    IDragHandler,
+    IEndDragHandler
 {
+    // =========================================================
+    // SETUP
+    // =========================================================
+
     [Header("Setup")]
+
     public RectTransform targetArea;
-    public TargetSpawner targetSpawner;       // Reference to TargetSpawner script to reveal target
-    public GameObject sceneParentToEnable;    // Scene parent to ENABLE when probe snaps
-    public GameObject dragParentToDisable;    // Drag parent to DISABLE when probe snaps
+    public TargetSpawner targetSpawner;
+
+    public GameObject sceneParentToEnable;
+    public GameObject dragParentToDisable;
+
     public float snapDistance = 100f;
     public bool lockAfterSnap = true;
     public bool returnToStartOnMiss = true;
     public float snapSpeed = 15f;
+
     public UnityEngine.Events.UnityEvent onSnapped;
 
+
+    // =========================================================
+    // DIALOGUE SYSTEM
+    // =========================================================
+
     [Header("Dialogue System")]
-    public GameObject dialoguePanelObject;      // Chat bubble panel
-    public TextMeshProUGUI dialogueText;        // TMP text component
-    public float typewriterSpeed = 0.05f;       // Delay between characters
-    
+
+    [Tooltip("The dialogue panel GameObject.")]
+    public GameObject dialoguePanelObject;
+
+    [Tooltip("Text inside the dialogue bubble.")]
+    public TextMeshProUGUI dialogueText;
+
+    [Tooltip("Time between each character.")]
+    public float typewriterSpeed = 0.05f;
+
+    [Tooltip("Sound played while the dialogue is typing.")]
+    public AudioClip typewriterSound;
+
+    [Tooltip("Play the typewriter sound every X non-space characters.")]
+    [Min(1)]
+    public int soundEveryCharacters = 2;
+
+    [Tooltip("Volume of the typewriter sound.")]
+    [Range(0f, 1f)]
+    public float typewriterVolume = 1f;
+
+
+    // =========================================================
+    // DIALOGUE ANIMATIONS
+    // =========================================================
+
+    [Header("Dialogue Animations")]
+
+    [Tooltip("Automatically resize the dialogue box based on the text.")]
+    public DialogueBoxAutoSize autoSize;
+
+    [Tooltip("Pop animation for the dialogue box.")]
+    public DialoguePopAnimation popAnimation;
+
+    [Tooltip("Triangle animation for the dialogue bubble.")]
+    public DialogueTriangleAnimation triangleAnimation;
+
+
+    // =========================================================
+    // DIALOGUES
+    // =========================================================
+
     [Header("Dialogues")]
-    public string[] dialogues = new string[]
-    {
-        "Hello! I need you to find the target using the ultrasound probe.",
-        "The meter on the right will help guide you. It shows how close you are.",
-        "Drag the probe across the screen to locate the hidden target.",
-        "Good luck! Start when you're ready."
-    };
+
+    [TextArea(2, 3)]
+    public string[] dialogues;
+
+
+    [Header("GameObjects To Hide After Dialogue")]
+
+    [Tooltip("GameObjects to hide when all dialogue is finished.")]
+    public GameObject[] gameObjectsToHideAfterDialogue;
+
+
+    // =========================================================
+    // INTERNAL VARIABLES
+    // =========================================================
 
     private RectTransform rect;
     private Canvas canvas;
     private Vector2 startPos;
+
     private bool snapped = false;
     private bool animating = false;
     private Vector2 animTarget;
-    
-    // Dialogue variables
+
+
+    // =========================================================
+    // DIALOGUE VARIABLES
+    // =========================================================
+
     private int currentDialogueIndex = 0;
+
     private bool isTyping = false;
     private bool dialogueComplete = false;
     private bool allDialoguesComplete = false;
+
     private bool dialogueLocked = true;
+
     private float inputCooldown = 0f;
+
     private const float INPUT_COOLDOWN_TIME = 0.1f;
+
+    // New safer typewriter handling
+    private Coroutine typingCoroutine;
+    private string currentFullText = "";
+
+
+    // =========================================================
+    // START
+    // =========================================================
 
     void Start()
     {
         rect = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+
         startPos = rect.anchoredPosition;
-        
-        // Start with dialogue
+
+
+        // -----------------------------------------------------
+        // Start with dialogue panel visible
+        // -----------------------------------------------------
+
         if (dialoguePanelObject != null)
+        {
             dialoguePanelObject.SetActive(true);
-        
-        StartCoroutine(ShowDialogue(dialogues[0]));
+        }
+
+
+        // -----------------------------------------------------
+        // Start first dialogue
+        // -----------------------------------------------------
+
+        if (dialogues != null && dialogues.Length > 0)
+        {
+            currentDialogueIndex = 0;
+
+            ShowDialogue();
+        }
+        else
+        {
+            FinishDialogue();
+        }
     }
+
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
 
     void Update()
     {
+        // -----------------------------------------------------
+        // Probe snapping animation
+        // -----------------------------------------------------
+
         if (animating)
         {
-            rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, animTarget, Time.deltaTime * snapSpeed);
-            if (Vector2.Distance(rect.anchoredPosition, animTarget) < 2f)
+            rect.anchoredPosition =
+                Vector2.Lerp(
+                    rect.anchoredPosition,
+                    animTarget,
+                    Time.deltaTime * snapSpeed
+                );
+
+            if (
+                Vector2.Distance(
+                    rect.anchoredPosition,
+                    animTarget
+                ) < 2f
+            )
             {
                 rect.anchoredPosition = animTarget;
                 animating = false;
             }
         }
-        
-        // Keep snapped probe locked to target position
+
+
+        // -----------------------------------------------------
+        // Keep snapped probe locked
+        // -----------------------------------------------------
+
         if (snapped && lockAfterSnap)
         {
-            rect.anchoredPosition = targetArea.anchoredPosition;
+            rect.anchoredPosition =
+                targetArea.anchoredPosition;
         }
-        
-        // Handle input cooldown
+
+
+        // -----------------------------------------------------
+        // Input cooldown
+        // -----------------------------------------------------
+
         if (inputCooldown > 0)
         {
             inputCooldown -= Time.deltaTime;
         }
-        
-        // Listen for dialogue input (with cooldown)
-        if (!allDialoguesComplete && inputCooldown <= 0 && (Input.GetMouseButtonDown(0) || Input.touchCount > 0))
-        {
-            HandleDialogueInput();
-            inputCooldown = INPUT_COOLDOWN_TIME;
-        }
+
+
     }
 
-    void HandleDialogueInput()
+
+    // =========================================================
+    // DIALOGUE INPUT
+    // =========================================================
+
+    public void AdvanceDialogue()
     {
+        if (allDialoguesComplete)
+            return;
+
+        // If text is still typing, finish it immediately.
         if (isTyping)
         {
-            // If still typing, complete the current dialogue instantly
-            StopAllCoroutines();
-            dialogueText.text = dialogues[currentDialogueIndex];
-            isTyping = false;
-            dialogueComplete = true;
-            Debug.Log("Text completed instantly");
+            FinishTyping();
+            return;
         }
-        else if (dialogueComplete)
+
+        // If current dialogue is complete, move to the next one.
+        if (dialogueComplete)
         {
-            // Move to next dialogue
             currentDialogueIndex++;
-            
-            if (currentDialogueIndex < dialogues.Length)
+
+            if (
+                dialogues != null &&
+                currentDialogueIndex < dialogues.Length
+            )
             {
                 dialogueComplete = false;
-                StartCoroutine(ShowDialogue(dialogues[currentDialogueIndex]));
-                Debug.Log("Moving to dialogue: " + currentDialogueIndex);
+                ShowDialogue();
+
+                Debug.Log(
+                    "Moving to dialogue: " +
+                    currentDialogueIndex
+                );
             }
             else
             {
-                // All dialogues complete
                 FinishDialogue();
             }
         }
     }
 
-    IEnumerator ShowDialogue(string text)
+
+    // =========================================================
+    // SHOW DIALOGUE
+    // =========================================================
+
+    private void ShowDialogue()
+    {
+        if (
+            dialogues == null ||
+            dialogues.Length == 0 ||
+            currentDialogueIndex < 0 ||
+            currentDialogueIndex >= dialogues.Length
+        )
+        {
+            return;
+        }
+
+
+        // -----------------------------------------------------
+        // Get current dialogue
+        // -----------------------------------------------------
+
+        string text =
+            dialogues[currentDialogueIndex] ?? "";
+
+
+        // -----------------------------------------------------
+        // Set dialogue state
+        // -----------------------------------------------------
+
+        isTyping = true;
+        dialogueComplete = false;
+
+
+        // -----------------------------------------------------
+        // Show dialogue panel
+        // -----------------------------------------------------
+
+        if (dialoguePanelObject != null)
+        {
+            dialoguePanelObject.SetActive(true);
+        }
+
+
+        // -----------------------------------------------------
+        // Clear previous text
+        // -----------------------------------------------------
+
+        if (dialogueText != null)
+        {
+            dialogueText.text = "";
+        }
+
+
+        // -----------------------------------------------------
+        // Store complete text
+        // -----------------------------------------------------
+
+        currentFullText = text;
+
+
+        // =====================================================
+        // AUTO SIZE
+        // =====================================================
+
+        if (autoSize != null)
+        {
+            if (
+                autoSize.enabled &&
+                autoSize.gameObject.activeInHierarchy
+            )
+            {
+                autoSize.ResizeForText(text);
+            }
+        }
+
+
+        // =====================================================
+        // POP ANIMATION
+        // =====================================================
+
+        if (popAnimation != null)
+        {
+            if (
+                popAnimation.enabled &&
+                popAnimation.gameObject.activeInHierarchy
+            )
+            {
+                popAnimation.PlayPop();
+            }
+        }
+
+
+        // =====================================================
+        // TRIANGLE ANIMATION
+        // =====================================================
+
+        if (triangleAnimation != null)
+        {
+            if (
+                triangleAnimation.enabled &&
+                triangleAnimation.gameObject.activeInHierarchy
+            )
+            {
+                triangleAnimation.PlayAnimation();
+            }
+        }
+
+
+        // -----------------------------------------------------
+        // Stop previous typewriter
+        // -----------------------------------------------------
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+
+            typingCoroutine = null;
+        }
+
+
+        // -----------------------------------------------------
+        // Start exactly one typewriter
+        // -----------------------------------------------------
+
+        typingCoroutine =
+            StartCoroutine(
+                TypeText(text)
+            );
+    }
+
+
+    // =========================================================
+    // TYPEWRITER
+    // =========================================================
+
+    private IEnumerator TypeText(string text)
     {
         isTyping = true;
-        if (dialogueText != null)
-            dialogueText.text = "";
+        dialogueComplete = false;
 
-        // Typewriter effect
-        foreach (char c in text)
+
+        // -----------------------------------------------------
+        // Clear text before typing
+        // -----------------------------------------------------
+
+        if (dialogueText != null)
+        {
+            dialogueText.text = "";
+        }
+
+
+        string safeText =
+            text ?? "";
+
+
+        float safeTypingSpeed =
+            Mathf.Max(
+                typewriterSpeed,
+                0.001f
+            );
+
+
+        int characterCounter = 0;
+
+
+        // -----------------------------------------------------
+        // Type each character
+        // -----------------------------------------------------
+
+        foreach (char c in safeText)
         {
             if (dialogueText != null)
+            {
                 dialogueText.text += c;
-            yield return new WaitForSeconds(typewriterSpeed);
+            }
+
+
+            // -------------------------------------------------
+            // Typewriter sound
+            // -------------------------------------------------
+
+            if (!char.IsWhiteSpace(c))
+            {
+                characterCounter++;
+
+                if (
+                    characterCounter >=
+                    Mathf.Max(
+                        1,
+                        soundEveryCharacters
+                    )
+                )
+                {
+                    if (
+                        typewriterSound != null &&
+                        AudioManager.Instance != null
+                    )
+                    {
+                        AudioManager.Instance.PlayDialogue(
+                            typewriterSound,
+                            typewriterVolume
+                        );
+                    }
+
+                    characterCounter = 0;
+                }
+            }
+
+
+            // -------------------------------------------------
+            // Wait before next character
+            // -------------------------------------------------
+
+            yield return new WaitForSeconds(
+                safeTypingSpeed
+            );
         }
+
+
+        // -----------------------------------------------------
+        // Finished typing
+        // -----------------------------------------------------
 
         isTyping = false;
         dialogueComplete = true;
+
+        typingCoroutine = null;
     }
+
+
+    // =========================================================
+    // FINISH CURRENT TYPING
+    // =========================================================
+
+    private void FinishTyping()
+    {
+        // -----------------------------------------------------
+        // Stop ONLY the typewriter coroutine
+        // -----------------------------------------------------
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+
+            typingCoroutine = null;
+        }
+
+
+        // -----------------------------------------------------
+        // Immediately show complete text
+        // -----------------------------------------------------
+
+        if (dialogueText != null)
+        {
+            dialogueText.text =
+                currentFullText;
+        }
+
+
+        isTyping = false;
+        dialogueComplete = true;
+
+
+        Debug.Log(
+            "Text completed instantly"
+        );
+    }
+
+
+    // =========================================================
+    // FINISH DIALOGUE
+    // =========================================================
 
     void FinishDialogue()
     {
+        // -----------------------------------------------------
+        // Make sure typewriter is stopped
+        // -----------------------------------------------------
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+
+            typingCoroutine = null;
+        }
+
+        isTyping = false;
+
+
+        // -----------------------------------------------------
+        // Dialogue is completely finished
+        // -----------------------------------------------------
+
         allDialoguesComplete = true;
         dialogueLocked = false;
-        
+
+
+        // -----------------------------------------------------
         // Hide dialogue panel
+        // -----------------------------------------------------
+
         if (dialoguePanelObject != null)
         {
             dialoguePanelObject.SetActive(false);
         }
-        
-        Debug.Log("✅ Dialogue complete! Probe is now draggable.");
+
+
+        // -----------------------------------------------------
+        // Hide assigned GameObjects after dialogue
+        // -----------------------------------------------------
+
+        if (gameObjectsToHideAfterDialogue != null)
+        {
+            foreach (GameObject obj in gameObjectsToHideAfterDialogue)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(false);
+                }
+            }
+        }
+
+
+        Debug.Log(
+            "Dialogue complete! Probe is now draggable."
+        );
     }
+
+
+    // =========================================================
+    // BEGIN DRAG
+    // =========================================================
 
     public void OnBeginDrag(PointerEventData data)
     {
-        // Block drag if dialogue is still playing
-        if (dialogueLocked) return;
-        
-        Debug.Log("OnBeginDrag called");
-        if (snapped && lockAfterSnap) 
+        // -----------------------------------------------------
+        // Block dragging during dialogue
+        // -----------------------------------------------------
+
+        if (dialogueLocked)
+            return;
+
+
+        Debug.Log(
+            "OnBeginDrag called"
+        );
+
+
+        // -----------------------------------------------------
+        // Don't allow dragging after snap
+        // -----------------------------------------------------
+
+        if (snapped && lockAfterSnap)
         {
-            Debug.Log("Already snapped - cannot drag!");
+            Debug.Log(
+                "Already snapped - cannot drag!"
+            );
+
             return;
         }
+
+
         animating = false;
     }
 
+
+    // =========================================================
+    // DRAG PROBE
+    // =========================================================
+
     public void OnDrag(PointerEventData data)
     {
-        // Block drag if dialogue is still playing
-        if (dialogueLocked) return;
-        
-        if (snapped && lockAfterSnap) 
+        // -----------------------------------------------------
+        // Block dragging during dialogue
+        // -----------------------------------------------------
+
+        if (dialogueLocked)
+            return;
+
+
+        if (snapped && lockAfterSnap)
         {
-            return; // Don't move if snapped and locked
+            return;
         }
-        
-        rect.anchoredPosition += data.delta / canvas.scaleFactor;
-        Debug.Log("Dragging: " + rect.anchoredPosition);
+
+
+        // -----------------------------------------------------
+        // Move probe
+        // -----------------------------------------------------
+
+        rect.anchoredPosition +=
+            data.delta / canvas.scaleFactor;
+
+
+        Debug.Log(
+            "Dragging: " +
+            rect.anchoredPosition
+        );
     }
+
+
+    // =========================================================
+    // END DRAG
+    // =========================================================
 
     public void OnEndDrag(PointerEventData data)
     {
-        // Block drag if dialogue is still playing
-        if (dialogueLocked) return;
-        
-        Debug.Log("OnEndDrag called");
-        if (snapped && lockAfterSnap) return;
+        // -----------------------------------------------------
+        // Block dragging during dialogue
+        // -----------------------------------------------------
 
-        // Use world position for distance check
-        float dist = Vector3.Distance(rect.position, targetArea.position);
-        Debug.Log("Distance: " + dist + " vs snapDistance: " + snapDistance);
+        if (dialogueLocked)
+            return;
+
+
+        Debug.Log(
+            "OnEndDrag called"
+        );
+
+
+        if (snapped && lockAfterSnap)
+            return;
+
+
+        // -----------------------------------------------------
+        // Check distance
+        // -----------------------------------------------------
+
+        float dist =
+            Vector3.Distance(
+                rect.position,
+                targetArea.position
+            );
+
+
+        Debug.Log(
+            "Distance: " +
+            dist +
+            " vs snapDistance: " +
+            snapDistance
+        );
+
+
+        // -----------------------------------------------------
+        // Snap
+        // -----------------------------------------------------
 
         if (dist <= snapDistance)
         {
             Snap();
         }
+
+
+        // -----------------------------------------------------
+        // Return to start
+        // -----------------------------------------------------
+
         else if (returnToStartOnMiss)
         {
             animTarget = startPos;
@@ -204,56 +722,122 @@ public class DopplerDragSnap : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
     }
 
+
+    // =========================================================
+    // SNAP
+    // =========================================================
+
     void Snap()
     {
         snapped = true;
-        
+
+
+        // -----------------------------------------------------
         // Get target world position
-        Vector3 targetWorldPos = targetArea.position;
-        
-        // Get probe's canvas
-        Canvas probeCanvas = rect.GetComponentInParent<Canvas>();
-        RectTransform probeParent = rect.parent as RectTransform;
-        
-        // Convert world position to screen position using target's canvas camera
-        Canvas targetCanvas = targetArea.GetComponentInParent<Canvas>();
-        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(
-            targetCanvas.worldCamera, 
-            targetWorldPos
-        );
-        
-        // Convert screen position to probe parent's local position
+        // -----------------------------------------------------
+
+        Vector3 targetWorldPos =
+            targetArea.position;
+
+
+        // -----------------------------------------------------
+        // Get probe canvas
+        // -----------------------------------------------------
+
+        Canvas probeCanvas =
+            rect.GetComponentInParent<Canvas>();
+
+
+        RectTransform probeParent =
+            rect.parent as RectTransform;
+
+
+        // -----------------------------------------------------
+        // Get target canvas
+        // -----------------------------------------------------
+
+        Canvas targetCanvas =
+            targetArea.GetComponentInParent<Canvas>();
+
+
+        // -----------------------------------------------------
+        // Convert target world position to screen
+        // -----------------------------------------------------
+
+        Vector2 screenPoint =
+            RectTransformUtility.WorldToScreenPoint(
+                targetCanvas.worldCamera,
+                targetWorldPos
+            );
+
+
+        // -----------------------------------------------------
+        // Convert screen position to probe parent
+        // -----------------------------------------------------
+
         Vector2 localPoint;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            probeParent,
-            screenPoint,
-            probeCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : probeCanvas.worldCamera,
-            out localPoint
-        );
-        
-        rect.anchoredPosition = localPoint;
+
+        RectTransformUtility
+            .ScreenPointToLocalPointInRectangle(
+                probeParent,
+                screenPoint,
+                probeCanvas.renderMode ==
+                    RenderMode.ScreenSpaceOverlay
+                    ? null
+                    : probeCanvas.worldCamera,
+                out localPoint
+            );
+
+
+        rect.anchoredPosition =
+            localPoint;
+
         animating = false;
-        
-        // Toggle scene parents visibility
+
+
+        // =====================================================
+        // TOGGLE SCENE PARENTS
+        // =====================================================
+
         if (dragParentToDisable != null)
         {
             dragParentToDisable.SetActive(false);
-            Debug.Log("❌ Dragging UI Hidden");
+
+            Debug.Log(
+                "Dragging UI Hidden"
+            );
         }
-        
+
+
         if (sceneParentToEnable != null)
         {
             sceneParentToEnable.SetActive(true);
-            Debug.Log("✅ Scene Parent Enabled");
+
+            Debug.Log(
+                "Scene Parent Enabled"
+            );
         }
-        
-        // Reveal the target!
+
+
+        // =====================================================
+        // REVEAL TARGET
+        // =====================================================
+
         if (targetSpawner != null)
         {
             targetSpawner.RevealTarget();
         }
-        
-        Debug.Log("✅ TARGET FOUND AND SCENE ACTIVATED!");
+
+
+        Debug.Log(
+            "TARGET FOUND AND SCENE ACTIVATED!"
+        );
+
+
+        // =====================================================
+        // EVENT
+        // =====================================================
+
         onSnapped?.Invoke();
     }
 }

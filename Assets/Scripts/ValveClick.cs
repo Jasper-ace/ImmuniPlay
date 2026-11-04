@@ -3,45 +3,154 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
-// Attach this to the Valve GameObject. It needs a Button component
-// (Unity UI) - drag that same Button into the "Valve Button" field below.
 public class ValveClick : MonoBehaviour
 {
+    // =========================================================
+    // GAMEOBJECTS TO SHOW / HIDE ON DIALOGUE START
+    // =========================================================
+
+    [Header("GAMEOBJECTS TO SHOW ON DIALOGUE START")]
+    [Tooltip("GameObjects to show when the dialogue starts.")]
+    [SerializeField] private GameObject[] gameObjectsToShowOnDialogueStart;
+
+    [Header("GAMEOBJECTS TO HIDE ON DIALOGUE START")]
+    [Tooltip("GameObjects to hide when the dialogue starts.")]
+    [SerializeField] private GameObject[] gameObjectsToHideOnDialogueStart;
+
+
+    // =========================================================
+    // VALVE
+    // =========================================================
+
+    [Header("VALVE")]
     [Tooltip("Drag the Button component on this same GameObject (or wherever your valve's Button lives).")]
     [SerializeField] private Button valveButton;
 
+
+    // =========================================================
+    // NEEDLE
+    // =========================================================
+
     [Header("NEEDLE")]
-    [Tooltip("The needle's RectTransform - it will be rotated back to Needle Angle At Zero when the valve is clicked.")]
+
+    [Tooltip("The needle's RectTransform.")]
     [SerializeField] private RectTransform needle;
 
-    [Tooltip("The needle's Z angle for a reading of 0 (same value you used on PressureGauge).")]
+    [Tooltip("The needle's Z angle for a reading of 0.")]
     [SerializeField] private float needleAngleAtZero = 0f;
 
-    [Tooltip("Seconds it takes the needle to smoothly sweep back to zero.")]
-    [SerializeField] private float needleMoveDuration = 0.4f;
+    [Tooltip("Total time for the needle to slowly travel from its starting position to 0.")]
+    [SerializeField] private float needleMoveDuration = 5f;
 
-    [Header("REVEAL AFTER NEEDLE HITS 0")]
-    [Tooltip("Optional. Drag a GameObject here to enable it once the needle animation finishes. The Valve itself is NOT reparented - it stays exactly where it is.")]
-    [SerializeField] private GameObject objectToEnable;
 
-    private Coroutine needleCoroutine;
+    // =========================================================
+    // PITIK ANGLES
+    // =========================================================
+
+    [Header("PITIK ANGLES")]
+
+    [Tooltip("First angle where a pitik happens.")]
+    [SerializeField] private float pitikAngle1 = 140f;
+
+    [Tooltip("Second angle where a pitik happens.")]
+    [SerializeField] private float pitikAngle2 = 100f;
+
+    [Tooltip("Third angle where a pitik happens.")]
+    [SerializeField] private float pitikAngle3 = 60f;
+
+
+    // =========================================================
+    // PITIK ANIMATION
+    // =========================================================
+
+    [Header("PITIK ANIMATION")]
+
+    [Tooltip("How far the needle quickly moves backward during a pitik.")]
+    [SerializeField] private float pitikAmount = 6f;
+
+    [Tooltip("How quickly the pitik happens.")]
+    [SerializeField] private float pitikDuration = 0.08f;
+
+    [Tooltip("Optional sound played whenever a pitik happens.")]
+    [SerializeField] private AudioClip pitikSound;
+
+    [Range(0f, 1f)]
+    [SerializeField] private float pitikSoundVolume = 1f;
+
+    // =========================================================
+    // DIALOGUE BUBBLE
+    // =========================================================
 
     [Header("DIALOGUE BUBBLE")]
-    [Tooltip("The chat bubble GameObject to show/hide (e.g. a panel with a TMP text inside).")]
+
+    [Tooltip("The chat bubble GameObject to show/hide.")]
     [SerializeField] private GameObject dialogueBubble;
 
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("DIALOGUE ANIMATIONS")]
+
+    [Tooltip("Automatically resizes the dialogue bubble.")]
+    [SerializeField] private DialogueBoxAutoSize autoSize;
+
+    [Tooltip("Pop animation for the dialogue bubble.")]
+    [SerializeField] private DialoguePopAnimation popAnimation;
+
+    [Tooltip("Triangle animation for the dialogue bubble.")]
+    [SerializeField] private DialogueTriangleAnimation triangleAnimation;
+
+    [Header("GAMEOBJECTS TO HIDE AFTER DIALOGUE")]
+    [Tooltip("GameObjects to hide when the dialogue is dismissed.")]
+    [SerializeField] private GameObject[] gameObjectsToHideAfterDialogue;
+
     [TextArea]
-    [SerializeField] private string instructionMessage = "Tap the valve to release the pressure.";
+    [SerializeField] private string instructionMessage =
+        "Tap the valve to release the pressure.";
 
-    [Tooltip("Seconds between each typed character. Lower = faster typing.")]
-    [SerializeField] private float typingSpeed = 0.03f;
+    [Tooltip("Seconds between each typed character.")]
+    [SerializeField] private float typingSpeed = 0.04f;
 
+
+    // =========================================================
+    // DIALOGUE SOUND
+    // =========================================================
+
+    [Header("DIALOGUE SOUND")]
+
+    [SerializeField] private AudioClip dialogueSound;
+
+    [Tooltip("Play the dialogue sound every X characters.")]
+    [SerializeField] private int soundEveryCharacters = 2;
+
+    [Range(0f, 1f)]
+    [Tooltip("Volume of the dialogue typing sound.")]
+    [SerializeField] private float dialogueSoundVolume = 0.6f;
+
+    [Header("SCENE TRANSITION")]
+
+    [Tooltip("GameObjects to disable after the needle reaches 0.")]
+    [SerializeField] private GameObject[] objectsToDisable;
+
+    [Tooltip("GameObjects to enable after the needle reaches 0.")]
+    [SerializeField] private GameObject[] objectsToEnable;
+
+
+    // =========================================================
+    // PRIVATE VARIABLES
+    // =========================================================
+
+    private Coroutine needleCoroutine;
     private Coroutine typingCoroutine;
+
     private string currentFullMessage;
+
     private bool isTyping;
     private bool canInteract = false;
+
+
+    // =========================================================
+    // AWAKE
+    // =========================================================
 
     private void Awake()
     {
@@ -56,16 +165,23 @@ public class ValveClick : MonoBehaviour
         }
     }
 
+
+    // =========================================================
+    // START
+    // =========================================================
+
     private void Start()
     {
         ShowDialogue(instructionMessage);
     }
 
-    private void Update()
-    {
-        if (!Input.GetMouseButtonDown(0))
-            return;
 
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
+    public void AdvanceDialogue()
+    {
         if (isTyping)
         {
             CompleteTyping();
@@ -76,17 +192,23 @@ public class ValveClick : MonoBehaviour
         }
     }
 
-    // Wired up to valveButton.onClick in Awake (and also visible/assignable
-    // in the Button's own OnClick() list in the Inspector if you prefer).
+
+    // =========================================================
+    // VALVE CLICK
+    // =========================================================
+
     public void OnValveClicked()
     {
-        // While the text is mid-type, this click just finished it (via
-        // Update above, same frame) - don't also treat it as opening the valve.
+        // Already running or already completed.
+        // Ignore any additional taps.
+        if (needleCoroutine != null)
+            return;
+
+        // While the text is typing, don't activate the valve.
         if (isTyping)
             return;
 
-        // If the bubble is still showing, this click dismisses it AND
-        // performs the valve action in one go - no extra click needed.
+        // If dialogue is still showing, hide it.
         if (dialogueBubble != null && dialogueBubble.activeSelf)
         {
             HideDialogue();
@@ -97,54 +219,333 @@ public class ValveClick : MonoBehaviour
 
         if (needle == null)
         {
-            Debug.LogError("ValveClick: Needle is not assigned!", this);
+            Debug.LogError(
+                "ValveClick: Needle is not assigned!",
+                this
+            );
+
             return;
         }
 
-        if (needleCoroutine != null)
+        // ---------------------------------------------------------
+        // LOCK THE BUTTON
+        // ---------------------------------------------------------
+
+        if (valveButton != null)
         {
-            StopCoroutine(needleCoroutine);
+            valveButton.interactable = false;
         }
 
-        needleCoroutine = StartCoroutine(AnimateNeedleToZero());
+        // ---------------------------------------------------------
+        // START THE FULL ANIMATION
+        // ---------------------------------------------------------
+
+        needleCoroutine = StartCoroutine(AnimateNeedle());
     }
 
-    private IEnumerator AnimateNeedleToZero()
+
+    // =========================================================
+    // NEEDLE ANIMATION
+    // =========================================================
+
+    private IEnumerator AnimateNeedle()
     {
         float startAngle = needle.localEulerAngles.z;
-        float elapsed = 0f;
 
-        while (elapsed < needleMoveDuration)
+        // Make sure all three pitik angles are treated as
+        // positions between the starting angle and zero.
+        float[] pitikAngles =
         {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / needleMoveDuration);
-            // ease-out so it settles smoothly instead of stopping abruptly
-            progress = 1f - Mathf.Pow(1f - progress, 3f);
+            pitikAngle1,
+            pitikAngle2,
+            pitikAngle3
+        };
 
-            float angle = Mathf.LerpAngle(startAngle, needleAngleAtZero, progress);
-            needle.localEulerAngles = new Vector3(0f, 0f, angle);
+        // Calculate the duration of each section.
+        float sectionDuration = needleMoveDuration / 4f;
 
-            yield return null;
-        }
+        // -----------------------------------------------------
+        // MOVE TO PITIK 1
+        // -----------------------------------------------------
 
-        needle.localEulerAngles = new Vector3(0f, 0f, needleAngleAtZero);
+        yield return StartCoroutine(
+            MoveNeedle(
+                startAngle,
+                pitikAngle1,
+                sectionDuration
+            )
+        );
+
+        yield return StartCoroutine(
+            PlayPitik(pitikAngle1)
+        );
+
+
+        // -----------------------------------------------------
+        // MOVE TO PITIK 2
+        // -----------------------------------------------------
+
+        yield return StartCoroutine(
+            MoveNeedle(
+                pitikAngle1,
+                pitikAngle2,
+                sectionDuration
+            )
+        );
+
+        yield return StartCoroutine(
+            PlayPitik(pitikAngle2)
+        );
+
+
+        // -----------------------------------------------------
+        // MOVE TO PITIK 3
+        // -----------------------------------------------------
+
+        yield return StartCoroutine(
+            MoveNeedle(
+                pitikAngle2,
+                pitikAngle3,
+                sectionDuration
+            )
+        );
+
+        yield return StartCoroutine(
+            PlayPitik(pitikAngle3)
+        );
+
+
+        // -----------------------------------------------------
+        // MOVE TO ZERO
+        // -----------------------------------------------------
+
+        yield return StartCoroutine(
+            MoveNeedle(
+                pitikAngle3,
+                needleAngleAtZero,
+                sectionDuration
+            )
+        );
+
+
+        // Make absolutely sure the needle ends at zero.
+        needle.localEulerAngles = new Vector3(
+            0f,
+            0f,
+            needleAngleAtZero
+        );
+
         needleCoroutine = null;
 
-        if (objectToEnable != null)
+        // Disable all assigned GameObjects.
+        if (objectsToDisable != null)
         {
-            objectToEnable.SetActive(true);
-            Debug.Log("ValveClick: enabled " + objectToEnable.name + " after needle hit 0. Valve's own parent is unchanged.");
+            foreach (GameObject obj in objectsToDisable)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(false);
+                }
+            }
+        }
+
+        // Enable all assigned GameObjects.
+        if (objectsToEnable != null)
+        {
+            foreach (GameObject obj in objectsToEnable)
+            {
+                if (obj != null)
+                {
+                    obj.SetActive(true);
+                }
+            }
         }
     }
 
 
     // =========================================================
-    // DIALOGUE BUBBLE HELPERS
+    // MOVE NEEDLE
+    // =========================================================
+
+    private IEnumerator MoveNeedle(
+        float fromAngle,
+        float toAngle,
+        float duration
+    )
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float progress =
+                Mathf.Clamp01(elapsed / duration);
+
+            // Smooth movement.
+            progress =
+                1f - Mathf.Pow(1f - progress, 3f);
+
+            float angle =
+                Mathf.LerpAngle(
+                    fromAngle,
+                    toAngle,
+                    progress
+                );
+
+            needle.localEulerAngles = new Vector3(
+                0f,
+                0f,
+                angle
+            );
+
+            yield return null;
+        }
+
+        needle.localEulerAngles = new Vector3(
+            0f,
+            0f,
+            toAngle
+        );
+    }
+
+
+    // =========================================================
+    // PITIK ANIMATION
+    // =========================================================
+
+    private IEnumerator PlayPitik(float angle)
+    {
+        // Play pitik sound.
+        if (pitikSound != null)
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayDialogue(
+                    pitikSound,
+                    pitikSoundVolume
+                );
+            }
+            else
+            {
+                AudioSource.PlayClipAtPoint(
+                    pitikSound,
+                    transform.position,
+                    pitikSoundVolume
+                );
+            }
+        }
+
+
+        // -----------------------------------------------------
+        // QUICK BACKWARD MOVEMENT
+        // -----------------------------------------------------
+
+        float backwardAngle = angle + pitikAmount;
+
+        float halfDuration =
+            Mathf.Max(pitikDuration / 2f, 0.01f);
+
+        float elapsed = 0f;
+
+        while (elapsed < halfDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            float progress =
+                Mathf.Clamp01(elapsed / halfDuration);
+
+            float currentAngle =
+                Mathf.LerpAngle(
+                    angle,
+                    backwardAngle,
+                    progress
+                );
+
+            needle.localEulerAngles = new Vector3(
+                0f,
+                0f,
+                currentAngle
+            );
+
+            yield return null;
+        }
+
+
+        // -----------------------------------------------------
+        // RETURN TO ORIGINAL ANGLE
+        // -----------------------------------------------------
+
+        elapsed = 0f;
+
+        while (elapsed < halfDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            float progress =
+                Mathf.Clamp01(elapsed / halfDuration);
+
+            float currentAngle =
+                Mathf.LerpAngle(
+                    backwardAngle,
+                    angle,
+                    progress
+                );
+
+            needle.localEulerAngles = new Vector3(
+                0f,
+                0f,
+                currentAngle
+            );
+
+            yield return null;
+        }
+
+
+        // Make sure it ends exactly at the pitik angle.
+        needle.localEulerAngles = new Vector3(
+            0f,
+            0f,
+            angle
+        );
+    }
+
+
+    // =========================================================
+    // DIALOGUE START GAMEOBJECTS
+    // =========================================================
+
+    private void ApplyDialogueStartGameObjects()
+    {
+        if (gameObjectsToShowOnDialogueStart != null)
+        {
+            foreach (GameObject obj in gameObjectsToShowOnDialogueStart)
+            {
+                if (obj != null)
+                    obj.SetActive(true);
+            }
+        }
+
+        if (gameObjectsToHideOnDialogueStart != null)
+        {
+            foreach (GameObject obj in gameObjectsToHideOnDialogueStart)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
+        }
+    }
+
+
+    // =========================================================
+    // DIALOGUE BUBBLE
     // =========================================================
 
     private void ShowDialogue(string message)
     {
         CancelInvoke(nameof(HideDialogue));
+
+        ApplyDialogueStartGameObjects();
 
         if (dialogueBubble != null)
         {
@@ -154,33 +555,127 @@ public class ValveClick : MonoBehaviour
         if (dialogueText != null)
         {
             dialogueText.gameObject.SetActive(true);
-
             currentFullMessage = message;
+
+            // Prepare the bubble before typing:
+            // auto-resize, pop animation, and triangle animation.
+            PrepareDialogue(message);
 
             if (typingCoroutine != null)
             {
                 StopCoroutine(typingCoroutine);
             }
 
-            typingCoroutine = StartCoroutine(TypeText(message));
+            typingCoroutine =
+                StartCoroutine(TypeText(message));
+        }   
+    }
+
+    private void PrepareDialogue(string text)
+    {
+        // -----------------------------------------------------
+        // AUTO SIZE
+        // -----------------------------------------------------
+        if (autoSize != null)
+        {
+            if (
+                autoSize.enabled &&
+                autoSize.gameObject.activeInHierarchy
+            )
+            {
+                autoSize.ResizeForText(text);
+            }
+        }
+
+        // -----------------------------------------------------
+        // POP
+        // -----------------------------------------------------
+        if (popAnimation != null)
+        {
+            if (
+                popAnimation.enabled &&
+                popAnimation.gameObject.activeInHierarchy
+            )
+            {
+                popAnimation.PlayPop();
+            }
+        }
+
+        // -----------------------------------------------------
+        // TRIANGLE
+        // -----------------------------------------------------
+        if (triangleAnimation != null)
+        {
+            if (
+                triangleAnimation.enabled &&
+                triangleAnimation.gameObject.activeInHierarchy
+            )
+            {
+                triangleAnimation.PlayAnimation();
+            }
         }
     }
+
+
+    // =========================================================
+    // TYPEWRITER
+    // =========================================================
 
     private IEnumerator TypeText(string message)
     {
         isTyping = true;
-        dialogueText.text = "";
 
-        foreach (char c in message)
+        if (dialogueText != null)
+            dialogueText.text = "";
+
+        string safeMessage = message ?? "";
+
+        float safeTypingSpeed =
+            Mathf.Max(typingSpeed, 0.001f);
+
+        int characterCount = 0;
+
+        foreach (char c in safeMessage)
         {
-            dialogueText.text += c;
-            yield return new WaitForSeconds(typingSpeed);
+            if (dialogueText != null)
+            {
+                dialogueText.text += c;
+            }
+
+            // Count only visible characters.
+            if (!char.IsWhiteSpace(c))
+            {
+                characterCount++;
+
+                if (
+                    dialogueSound != null &&
+                    characterCount %
+                    Mathf.Max(soundEveryCharacters, 1) == 0
+                )
+                {
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlayDialogue(
+                            dialogueSound,
+                            dialogueSoundVolume
+                        );
+                    }
+                }
+            }
+
+            yield return new WaitForSeconds(
+                safeTypingSpeed
+            );
         }
 
         isTyping = false;
         typingCoroutine = null;
-
     }
+
+
+    // =========================================================
+    // COMPLETE TYPING
+    // =========================================================
 
     private void CompleteTyping()
     {
@@ -196,9 +691,12 @@ public class ValveClick : MonoBehaviour
         }
 
         isTyping = false;
-
     }
 
+
+    // =========================================================
+    // HIDE DIALOGUE
+    // =========================================================
 
     private void HideDialogue()
     {
@@ -210,6 +708,16 @@ public class ValveClick : MonoBehaviour
         if (dialogueText != null)
         {
             dialogueText.gameObject.SetActive(false);
+        }
+
+        // Hide selected GameObjects after the dialogue is dismissed.
+        if (gameObjectsToHideAfterDialogue != null)
+        {
+            foreach (GameObject obj in gameObjectsToHideAfterDialogue)
+            {
+                if (obj != null)
+                    obj.SetActive(false);
+            }
         }
 
         canInteract = true;

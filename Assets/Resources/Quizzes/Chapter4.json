@@ -1,0 +1,115 @@
+{
+  "chapterID": 2,
+  "title": "Chapter 3",
+  "subtitle": "You about myths and facts.",
+  "introCharacterPrefab": "Chapter2_Character_Intro",
+  "questions": [
+  {
+      "question": "You hear a vaccine claim you are unsure about. What should you do?",
+      "answers": [
+        {
+          "text": "Verify it with a reliable source or healthcare professional.",
+          "isCorrect": true
+        },
+        {
+          "text": "Believe it if many people agree with it.",
+          "isCorrect": false
+        },
+        {
+          "text": "Trust it if another parent experienced it.",
+          "isCorrect": false
+        },
+        {
+          "text": "Share it and see what others think.",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Reliable sources and healthcare professionals can help confirm if a claim is true."
+    },
+    {
+      "question": "Why should vaccine information be verified?",
+      "answers": [
+        {
+          "text": "False information can affect health decisions.",
+          "isCorrect": true
+        },
+        {
+          "text": "Different parents may have different opinions.",
+          "isCorrect": false
+        },
+        {
+          "text": "Online information is always unreliable.",
+          "isCorrect": false
+        },
+        {
+          "text": "Only doctors need to understand vaccine information.",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Checking information helps you avoid myths and make informed health decisions."
+    }, {
+      "question": "Who should you ask about your child's vaccines?",
+      "answers": [
+        {
+          "text": "A qualified healthcare professional.",
+          "isCorrect": true
+        },
+        {
+          "text": "Another parent with a similar experience.",
+          "isCorrect": false
+        },
+        {
+          "text": "A trusted family member.",
+          "isCorrect": false
+        },
+        {
+          "text": "An online parenting group.",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Healthcare professionals can provide reliable guidance about vaccines."
+    },{
+      "question": "You find two conflicting vaccine claims. What should you do?",
+      "answers": [
+        {
+          "text": "Check reliable sources and ask a healthcare professional.",
+          "isCorrect": true
+        },
+        {
+          "text": "Choose the claim with more likes.",
+          "isCorrect": false
+        },
+        {
+          "text": "Choose the one your friends believe.",
+          "isCorrect": false
+        },
+        {
+          "text": "Accept both claims as equally true.",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Reliable sources can help you determine which information is accurate."
+    }, {
+      "question": "Why shouldn't you rely only on other parents' experiences?",
+      "answers": [
+        {
+          "text": "Personal experiences may not apply to every child.",
+          "isCorrect": true
+        },
+        {
+          "text": "Parents cannot have opinions about vaccines.",
+          "isCorrect": false
+        },
+        {
+          "text": "Only online information can be trusted.",
+          "isCorrect": false
+        },
+        {
+          "text": "Every child's experience with vaccines is identical.",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Personal experiences can differ, so health concerns should be checked with a professional."
+    }
+  ]
+}

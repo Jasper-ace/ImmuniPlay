@@ -103,12 +103,15 @@ public class Milk : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     public void OnEndDrag(PointerEventData eventData)
     {
         isDragging = false;
+
         if (milkCanvasGroup != null)
             milkCanvasGroup.alpha = 1f;
 
-        if (targetImage != null)
+        // If the milk did not reach the target,
+        // return it to its original position.
+        if (!completed && milkRect != null)
         {
-            targetImage.color = new Color(1f, 1f, 1f, 0.5f);
+            milkRect.anchoredPosition = originalPosition;
         }
     }
 
@@ -193,7 +196,6 @@ public class Milk : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
         if (targetImage != null)
         {
             targetImage.enabled = true;
-            targetImage.color = new Color(1f, 1f, 1f, 0.5f);
         }
 
         Image milkImage = GetComponent<Image>();

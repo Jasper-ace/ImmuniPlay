@@ -9,46 +9,86 @@ public class SideMenuController : MonoBehaviour
     public RectTransform menuPanel;
     public CanvasGroup scrimCanvasGroup;
     public GameObject hamburgerButton;
-    
+
     [Header("Animation Settings")]
     public float animationDuration = 0.4f;
-    public AnimationCurve easingCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    public AnimationCurve easingCurve =
+        AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     [Header("Navigation Scene Names")]
     public string storySceneName = "Chapters";
-    public string quizSceneName = "Chapters";
     public string homeSceneName = "TitleScene";
+
+    [Header("Quiz Settings")]
+    [Tooltip("Must match the chapter JSON/save name, such as Chapter1, Chapter2, etc.")]
+    public string chapterFileName = "Chapter1";
+
+    [Tooltip("Scene to load after the quiz is completed.")]
+    public string nextChapterScene = "Scene13";
+
+    [Tooltip("Lock icon shown when the quiz has not been attempted.")]
+    public GameObject quizLockIcon;
+
+    // There is only ONE shared quiz scene.
+    private const string QUIZ_SCENE_NAME = "ChapterQuiz";
 
     private bool isOpen = false;
     private Coroutine transitionCoroutine;
+
     private Vector2 closedPosition;
     private Vector2 openedPosition;
+
     private SceneFade fadeManager;
 
     private void Start()
     {
-        // Find existing SceneFade manager in the scene for consistent transition animations
-        fadeManager = Object.FindFirstObjectByType<SceneFade>();
+        fadeManager =
+            Object.FindFirstObjectByType<SceneFade>();
+
+        // ---------------------------------------------------------
+        // Find Hamburger Button
+        // ---------------------------------------------------------
 
         if (hamburgerButton == null && transform.parent != null)
         {
-            var burgerTransform = transform.parent.Find("HamburgerButton");
+            var burgerTransform =
+                transform.parent.Find("HamburgerButton");
+
             if (burgerTransform != null)
             {
-                hamburgerButton = burgerTransform.gameObject;
+                hamburgerButton =
+                    burgerTransform.gameObject;
             }
         }
 
+        // ---------------------------------------------------------
+        // Menu Positions
+        // ---------------------------------------------------------
+
         if (menuPanel != null)
         {
-            // Calculate opened and closed positions based on panel width
-            float panelWidth = menuPanel.rect.width;
-            openedPosition = new Vector2(0f, menuPanel.anchoredPosition.y);
-            closedPosition = new Vector2(-panelWidth, menuPanel.anchoredPosition.y);
-            
-            // Set initial state to closed
-            menuPanel.anchoredPosition = closedPosition;
+            float panelWidth =
+                menuPanel.rect.width;
+
+            openedPosition =
+                new Vector2(
+                    0f,
+                    menuPanel.anchoredPosition.y
+                );
+
+            closedPosition =
+                new Vector2(
+                    -panelWidth,
+                    menuPanel.anchoredPosition.y
+                );
+
+            menuPanel.anchoredPosition =
+                closedPosition;
         }
+
+        // ---------------------------------------------------------
+        // Scrim
+        // ---------------------------------------------------------
 
         if (scrimCanvasGroup != null)
         {
@@ -56,13 +96,15 @@ public class SideMenuController : MonoBehaviour
             scrimCanvasGroup.blocksRaycasts = false;
         }
 
-        // --- AUTOMATIC CLICK EVENT WIRING ---
-        // This ensures the listeners are never lost when saved in scene/prefabs
-        
-        // 1. Hamburger Button
+        // ---------------------------------------------------------
+        // Hamburger Button
+        // ---------------------------------------------------------
+
         if (hamburgerButton != null)
         {
-            var burgerBtn = hamburgerButton.GetComponent<UnityEngine.UI.Button>();
+            var burgerBtn =
+                hamburgerButton.GetComponent<Button>();
+
             if (burgerBtn != null)
             {
                 burgerBtn.onClick.RemoveAllListeners();
@@ -70,10 +112,15 @@ public class SideMenuController : MonoBehaviour
             }
         }
 
-        // 2. Scrim background
+        // ---------------------------------------------------------
+        // Scrim Button
+        // ---------------------------------------------------------
+
         if (scrimCanvasGroup != null)
         {
-            var scrimBtn = scrimCanvasGroup.GetComponent<UnityEngine.UI.Button>();
+            var scrimBtn =
+                scrimCanvasGroup.GetComponent<Button>();
+
             if (scrimBtn != null)
             {
                 scrimBtn.onClick.RemoveAllListeners();
@@ -81,119 +128,271 @@ public class SideMenuController : MonoBehaviour
             }
         }
 
-        // 3. Menu buttons inside MenuPanel
+        // ---------------------------------------------------------
+        // Story Button
+        // ---------------------------------------------------------
+
         if (menuPanel != null)
         {
-            var storyBtn = menuPanel.Find("ButtonContainer/StoryButton")?.GetComponent<UnityEngine.UI.Button>();
+            var storyBtn =
+                menuPanel
+                    .Find("ButtonContainer/StoryButton")
+                    ?.GetComponent<Button>();
+
             if (storyBtn != null)
             {
                 storyBtn.onClick.RemoveAllListeners();
-                storyBtn.onClick.AddListener(OnStoryClicked);
+                storyBtn.onClick.AddListener(
+                    OnStoryClicked
+                );
             }
 
-            var quizBtn = menuPanel.Find("ButtonContainer/QuizButton")?.GetComponent<UnityEngine.UI.Button>();
+            // -----------------------------------------------------
+            // Quiz Button
+            // -----------------------------------------------------
+
+            var quizBtn =
+                menuPanel
+                    .Find("ButtonContainer/QuizButton")
+                    ?.GetComponent<Button>();
+
             if (quizBtn != null)
             {
                 quizBtn.onClick.RemoveAllListeners();
-                quizBtn.onClick.AddListener(OnQuizClicked);
+                quizBtn.onClick.AddListener(
+                    OnQuizClicked
+                );
+
+                // Update quiz lock state
+                UpdateQuizButtonState(quizBtn);
             }
 
-            var settingsBtn = menuPanel.Find("ButtonContainer/SettingsButton")?.GetComponent<UnityEngine.UI.Button>();
+            // -----------------------------------------------------
+            // Settings Button
+            // -----------------------------------------------------
+
+            var settingsBtn =
+                menuPanel
+                    .Find("ButtonContainer/SettingsButton")
+                    ?.GetComponent<Button>();
+
             if (settingsBtn != null)
             {
                 settingsBtn.onClick.RemoveAllListeners();
-                settingsBtn.onClick.AddListener(OnSettingsClicked);
+                settingsBtn.onClick.AddListener(
+                    OnSettingsClicked
+                );
             }
 
-            var homeBtn = menuPanel.Find("ButtonContainer/HomeButton")?.GetComponent<UnityEngine.UI.Button>();
+            // -----------------------------------------------------
+            // Home Button
+            // -----------------------------------------------------
+
+            var homeBtn =
+                menuPanel
+                    .Find("ButtonContainer/HomeButton")
+                    ?.GetComponent<Button>();
+
             if (homeBtn != null)
             {
                 homeBtn.onClick.RemoveAllListeners();
-                homeBtn.onClick.AddListener(OnHomeClicked);
+                homeBtn.onClick.AddListener(
+                    OnHomeClicked
+                );
             }
         }
 
-        // Ensure hamburger button is visible initially when menu is closed
+        // ---------------------------------------------------------
+        // Hamburger Visible
+        // ---------------------------------------------------------
+
         if (hamburgerButton != null)
         {
             hamburgerButton.SetActive(true);
         }
     }
 
+    // =============================================================
+    // QUIZ LOCK SYSTEM
+    // =============================================================
+
+    private void UpdateQuizButtonState(Button quizButton)
+    {
+        if (quizButton == null)
+            return;
+
+        // Safety check
+        if (SaveManager.Instance == null)
+        {
+            Debug.LogWarning(
+                "[SideMenu] SaveManager not found. " +
+                "Quiz button will remain disabled."
+            );
+
+            quizButton.interactable = false;
+
+            if (quizLockIcon != null)
+                quizLockIcon.SetActive(true);
+
+            return;
+        }
+
+        if (string.IsNullOrEmpty(chapterFileName))
+        {
+            Debug.LogWarning(
+                "[SideMenu] Chapter File Name is empty."
+            );
+
+            quizButton.interactable = false;
+
+            if (quizLockIcon != null)
+                quizLockIcon.SetActive(true);
+
+            return;
+        }
+
+        // Check the SaveManager
+        bool quizAttempted =
+            SaveManager.Instance.IsQuizAttempted(
+                chapterFileName
+            );
+
+        // Enable / disable button
+        quizButton.interactable = quizAttempted;
+
+        // Show / hide lock
+        if (quizLockIcon != null)
+        {
+            quizLockIcon.SetActive(!quizAttempted);
+        }
+
+        Debug.Log(
+            $"[SideMenu] Quiz Button State\n" +
+            $"Chapter: {chapterFileName}\n" +
+            $"Quiz Attempted: {quizAttempted}\n" +
+            $"Button Enabled: {quizButton.interactable}\n" +
+            $"Lock Visible: {!quizAttempted}"
+        );
+    }
+
+    // =============================================================
+    // MENU
+    // =============================================================
+
     public void ToggleMenu()
     {
         if (isOpen)
-        {
             CloseMenu();
-        }
         else
-        {
             OpenMenu();
-        }
     }
 
     public void OpenMenu()
     {
-        if (isOpen) return;
+        if (isOpen)
+            return;
+
         isOpen = true;
 
-        if (transitionCoroutine != null) StopCoroutine(transitionCoroutine);
-        transitionCoroutine = StartCoroutine(AnimateTransition(true));
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SetSideMenuAudioPaused(true);
+
+        if (transitionCoroutine != null)
+            StopCoroutine(transitionCoroutine);
+
+        transitionCoroutine =
+            StartCoroutine(
+                AnimateTransition(true)
+            );
     }
 
     public void CloseMenu()
     {
-        if (!isOpen) return;
+        if (!isOpen)
+            return;
+
         isOpen = false;
 
-        if (transitionCoroutine != null) StopCoroutine(transitionCoroutine);
-        transitionCoroutine = StartCoroutine(AnimateTransition(false));
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.SetSideMenuAudioPaused(false);
+
+        if (transitionCoroutine != null)
+            StopCoroutine(transitionCoroutine);
+
+        transitionCoroutine =
+            StartCoroutine(
+                AnimateTransition(false)
+            );
     }
 
     private IEnumerator AnimateTransition(bool open)
     {
         float elapsed = 0f;
-        Vector2 startPos = menuPanel != null ? menuPanel.anchoredPosition : Vector2.zero;
-        Vector2 targetPos = open ? openedPosition : closedPosition;
 
-        float startAlpha = scrimCanvasGroup != null ? scrimCanvasGroup.alpha : 0f;
-        float targetAlpha = open ? 1f : 0f;
+        Vector2 startPos =
+            menuPanel != null
+                ? menuPanel.anchoredPosition
+                : Vector2.zero;
+
+        Vector2 targetPos =
+            open
+                ? openedPosition
+                : closedPosition;
+
+        float startAlpha =
+            scrimCanvasGroup != null
+                ? scrimCanvasGroup.alpha
+                : 0f;
+
+        float targetAlpha =
+            open
+                ? 1f
+                : 0f;
 
         if (scrimCanvasGroup != null && open)
-        {
             scrimCanvasGroup.blocksRaycasts = true;
-        }
 
-        // Hide hamburger button immediately when starting to open
-        // Show hamburger button immediately when starting to close
         if (hamburgerButton != null)
-        {
             hamburgerButton.SetActive(!open);
-        }
 
         while (elapsed < animationDuration)
         {
-            elapsed += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(elapsed / animationDuration);
-            float curveT = easingCurve.Evaluate(t);
+            elapsed +=
+                Time.unscaledDeltaTime;
+
+            float t =
+                Mathf.Clamp01(
+                    elapsed / animationDuration
+                );
+
+            float curveT =
+                easingCurve.Evaluate(t);
 
             if (menuPanel != null)
             {
-                menuPanel.anchoredPosition = Vector2.Lerp(startPos, targetPos, curveT);
+                menuPanel.anchoredPosition =
+                    Vector2.Lerp(
+                        startPos,
+                        targetPos,
+                        curveT
+                    );
             }
 
             if (scrimCanvasGroup != null)
             {
-                scrimCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, curveT);
+                scrimCanvasGroup.alpha =
+                    Mathf.Lerp(
+                        startAlpha,
+                        targetAlpha,
+                        curveT
+                    );
             }
 
             yield return null;
         }
 
         if (menuPanel != null)
-        {
             menuPanel.anchoredPosition = targetPos;
-        }
 
         if (scrimCanvasGroup != null)
         {
@@ -201,58 +400,150 @@ public class SideMenuController : MonoBehaviour
             scrimCanvasGroup.blocksRaycasts = open;
         }
 
-        // Double-check the final state of the hamburger button
         if (hamburgerButton != null)
-        {
             hamburgerButton.SetActive(!open);
-        }
 
         transitionCoroutine = null;
     }
 
-    // Button Event Handlers
+    // =============================================================
+    // STORY
+    // =============================================================
+
     public void OnStoryClicked()
     {
         CloseMenu();
         LoadSceneWithName(storySceneName);
     }
 
+    // =============================================================
+    // QUIZ
+    // =============================================================
+
     public void OnQuizClicked()
     {
+        // Double safety check
+        if (SaveManager.Instance == null)
+        {
+            Debug.LogError(
+                "[SideMenu] SaveManager instance not found."
+            );
+            return;
+        }
+
+        if (string.IsNullOrEmpty(chapterFileName))
+        {
+            Debug.LogError(
+                "[SideMenu] Chapter File Name is empty."
+            );
+            return;
+        }
+
+        // Check if this chapter's quiz was attempted
+        bool quizAttempted =
+            SaveManager.Instance.IsQuizAttempted(
+                chapterFileName
+            );
+
+        if (!quizAttempted)
+        {
+            Debug.Log(
+                "[SideMenu] Quiz is locked for "
+                + chapterFileName
+            );
+
+            return;
+        }
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.StopAllSounds();
+
         CloseMenu();
-        LoadSceneWithName(quizSceneName);
+
+        if (string.IsNullOrEmpty(nextChapterScene))
+        {
+            Debug.LogWarning(
+                "[SideMenu] Next Chapter Scene is empty."
+            );
+        }
+
+        // Send data to the shared ChapterQuiz scene
+        QuizSceneData.chapterFileName =
+            chapterFileName;
+
+        QuizSceneData.nextChapterScene =
+            nextChapterScene;
+
+        Debug.Log(
+            $"[SideMenu] Opening Quiz\n" +
+            $"Chapter: {chapterFileName}\n" +
+            $"Next Chapter: {nextChapterScene}"
+        );
+
+        LoadSceneWithName(
+            QUIZ_SCENE_NAME
+        );
     }
+
+    // =============================================================
+    // SETTINGS
+    // =============================================================
 
     public void OnSettingsClicked()
     {
-        CloseMenu();
-        
-        // Find SettingsController in the scene and open the settings panel
-        SettingsController settingsController = Object.FindFirstObjectByType<SettingsController>();
+        SettingsController settingsController =
+            Object.FindFirstObjectByType<SettingsController>();
+
         if (settingsController != null)
         {
+            // Open settings first. Its AudioPauseWhileEnabled component
+            // requests a settings pause before the menu releases its pause.
             settingsController.OpenSettings();
         }
         else
         {
-            Debug.LogWarning("SettingsController not found in the scene.");
+            Debug.LogWarning(
+                "[SideMenu] SettingsController not found in the scene."
+            );
         }
+
+        CloseMenu();
     }
+
+    // =============================================================
+    // HOME
+    // =============================================================
 
     public void OnHomeClicked()
     {
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.StopAllSounds();
+
         CloseMenu();
         LoadSceneWithName(homeSceneName);
     }
 
+    // =============================================================
+    // SCENE LOADING
+    // =============================================================
+
     private void LoadSceneWithName(string name)
     {
-        if (string.IsNullOrEmpty(name)) return;
+        if (string.IsNullOrEmpty(name))
+        {
+            Debug.LogWarning(
+                "[SideMenu] Scene name is empty."
+            );
 
-        // Don't reload if we are already in the target scene
+            return;
+        }
+
         if (SceneManager.GetActiveScene().name == name)
         {
-            Debug.Log($"Already in scene: {name}");
+            Debug.Log(
+                $"[SideMenu] Already in scene: {name}"
+            );
+
             return;
         }
 

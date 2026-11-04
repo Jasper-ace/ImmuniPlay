@@ -1,38 +1,160 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PopupController : MonoBehaviour
 {
-    public GameObject infoPopup1;
-    public GameObject infoPopup2;
-    public GameObject infoPopup3;
-
-    public void OpenPopup1()
+    [System.Serializable]
+    public class PopupData
     {
-        infoPopup1.SetActive(true);
+        [Tooltip("The popup GameObject.")]
+        public GameObject popup;
+
+        [Tooltip("If enabled, this popup cannot be closed until the dialogue is finished.")]
+        public bool requiresDialogue = false;
     }
 
-    public void ClosePopup1()
+    [Header("Popups")]
+    public List<PopupData> popups = new List<PopupData>();
+
+    private int currentPopupIndex = -1;
+    private bool dialogueFinished = false;
+
+
+    // ==========================================
+    // OPEN POPUP
+    // ==========================================
+
+    public void OpenPopup(int index)
     {
-        infoPopup1.SetActive(false);
+        // Check index
+        if (index < 0 || index >= popups.Count)
+        {
+            Debug.LogWarning("Invalid popup index: " + index);
+            return;
+        }
+
+        // Close any currently open popup
+        CloseCurrentPopupInstantly();
+
+        PopupData popupData = popups[index];
+
+        if (popupData.popup == null)
+        {
+            Debug.LogWarning("Popup " + index + " has no GameObject assigned.");
+            return;
+        }
+
+        // Remember which popup is currently open
+        currentPopupIndex = index;
+
+        // Reset dialogue state
+        dialogueFinished = !popupData.requiresDialogue;
+
+        // Show popup
+        popupData.popup.SetActive(true);
+
+        Debug.Log(
+            "Opened Popup " + index +
+            " | Requires Dialogue: " +
+            popupData.requiresDialogue
+        );
     }
 
-    public void OpenPopup2()
+
+    // ==========================================
+    // CLOSE CURRENT POPUP
+    // ==========================================
+
+    public void CloseCurrentPopup()
     {
-        infoPopup2.SetActive(true);
+        // No popup open
+        if (currentPopupIndex < 0)
+            return;
+
+        PopupData popupData = popups[currentPopupIndex];
+
+        // Check if dialogue is required
+        if (popupData.requiresDialogue && !dialogueFinished)
+        {
+            Debug.Log(
+                "Cannot close popup yet. Dialogue is still active."
+            );
+
+            return;
+        }
+
+        // Close popup
+        if (popupData.popup != null)
+        {
+            popupData.popup.SetActive(false);
+        }
+
+        Debug.Log("Closed Popup " + currentPopupIndex);
+
+        currentPopupIndex = -1;
+        dialogueFinished = false;
     }
 
-    public void ClosePopup2()
+
+    // ==========================================
+    // CLOSE CURRENT POPUP WITHOUT CHECKING
+    // ==========================================
+
+    private void CloseCurrentPopupInstantly()
     {
-        infoPopup2.SetActive(false);
+        if (currentPopupIndex < 0)
+            return;
+
+        PopupData popupData = popups[currentPopupIndex];
+
+        if (popupData.popup != null)
+        {
+            popupData.popup.SetActive(false);
+        }
+
+        currentPopupIndex = -1;
+        dialogueFinished = false;
     }
 
-    public void OpenPopup3()
+
+    // ==========================================
+    // DIALOGUE FINISHED
+    // ==========================================
+
+    public void SetDialogueFinished()
     {
-        infoPopup3.SetActive(true);
+        dialogueFinished = true;
+
+        Debug.Log("Dialogue finished. Popup can now close.");
     }
 
-    public void ClosePopup3()
+
+    // ==========================================
+    // OPTIONAL: CLOSE SPECIFIC POPUP
+    // ==========================================
+
+    public void ClosePopup(int index)
     {
-        infoPopup3.SetActive(false);
+        if (index < 0 || index >= popups.Count)
+        {
+            Debug.LogWarning("Invalid popup index: " + index);
+            return;
+        }
+
+        // If this isn't the currently active popup,
+        // simply close it.
+        if (index != currentPopupIndex)
+        {
+            if (popups[index].popup != null)
+            {
+                popups[index].popup.SetActive(false);
+            }
+
+            return;
+        }
+
+        // If it is the current popup, use the normal
+        // dialogue protection.
+        CloseCurrentPopup();
     }
 }

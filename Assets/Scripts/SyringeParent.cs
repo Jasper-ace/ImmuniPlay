@@ -24,6 +24,14 @@ public class SyringeParent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
              "If it looks wrong in play mode, flip this to shrink from the other side instead.")]
     [SerializeField] private bool liquidShrinksFromTop = true;
 
+    [Header("POP SOUND")]
+    [Tooltip("Sound played when the syringe snaps to the injection target.")]
+    [SerializeField] private AudioClip popSound;
+
+    [Tooltip("Volume of the pop sound.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float popSoundVolume = 0.6f;
+
     //====================================================
     // STATE
     //====================================================
@@ -175,16 +183,30 @@ public class SyringeParent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         syringeStuck = true;
         isDraggingSyringe = false;
+
         syringeCanvasGroup.alpha = 1f;
         syringeCanvasGroup.blocksRaycasts = false;
 
+        // Snap syringe to target
         syringeRect.position = injectionTarget.position;
+
+        // Play pop sound when syringe snaps
+        if (popSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(
+                popSound,
+                popSoundVolume
+            );
+        }
 
         // Show inject button
         if (injectButton != null)
         {
             injectButton.gameObject.SetActive(true);
-            Debug.Log("Syringe stuck! Press and hold INJECT button to inject.");
+
+            Debug.Log(
+                "Syringe stuck! Press and hold INJECT button to inject."
+            );
         }
     }
 

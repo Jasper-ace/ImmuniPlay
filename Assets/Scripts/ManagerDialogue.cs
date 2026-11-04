@@ -2,16 +2,64 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
+[System.Serializable]
+public class ManagerDialogueEntry
+{
+    [TextArea(2, 5)]
+    [Tooltip("The dialogue text for this entry.")]
+    public string dialogue;
+
+    [Header("GAMEOBJECT")]
+    [Tooltip("This GameObject is enabled when this dialogue starts and disabled when this dialogue finishes.")]
+    public GameObject gameObjectToEnable;
+}
+
 public class ManagerDialogue : MonoBehaviour
 {
     //====================================================
     // DIALOGUE
     //====================================================
+
     [Header("Dialogue")]
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
-    public string[] dialogues;
+    public ManagerDialogueEntry[] dialogues;
     public float typingSpeed = 0.05f;
+
+    //====================================================
+    // TYPEWRITER SOUND
+    //====================================================
+
+    [Header("TYPEWRITER SOUND")]
+
+    [Tooltip("Short sound played while the dialogue is typing.")]
+    [SerializeField] private AudioClip typewriterSound;
+
+    [Tooltip("Play the typing sound every X characters.")]
+    [SerializeField] private int soundEveryCharacters = 2;
+
+    [Tooltip("Volume of the typewriter sound.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float typewriterVolume = 0.6f;
+
+    //====================================================
+    // DIALOGUE ANIMATIONS
+    //====================================================
+
+    [Header("DIALOGUE ANIMATIONS")]
+
+    [Tooltip("Automatically resizes the dialogue bubble.")]
+    public DialogueBoxAutoSize autoSize;
+
+    [Tooltip("Pop animation for the dialogue bubble.")]
+    public DialoguePopAnimation popAnimation;
+
+    [Tooltip("Triangle animation for the dialogue bubble.")]
+    public DialogueTriangleAnimation triangleAnimation;
+
+    //====================================================
+    // INTERNAL
+    //====================================================
 
     private int currentDialogue = -1;
     private Coroutine typingRoutine;
@@ -20,6 +68,7 @@ public class ManagerDialogue : MonoBehaviour
     //====================================================
     // ALCOHOL
     //====================================================
+
     [Header("Alcohol")]
     public int alcoholDialogueIndex = 2;
     public GameObject alcoholParent;
@@ -28,6 +77,7 @@ public class ManagerDialogue : MonoBehaviour
     //====================================================
     // START
     //====================================================
+
     void Start()
     {
         if (alcoholParent != null)
@@ -39,47 +89,106 @@ public class ManagerDialogue : MonoBehaviour
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
 
-        if (dialogues.Length > 0)
+        if (dialogues != null && dialogues.Length > 0)
         {
             currentDialogue = 0;
-            typingRoutine = StartCoroutine(TypeDialogue(dialogues[currentDialogue]));
+            StartTyping();
         }
     }
 
     //====================================================
-    // UPDATE
+    // DIALOGUE INPUT
     //====================================================
-    void Update()
+
+    // Called by the global Dialogue Tap Input Button.
+    public void AdvanceDialogue()
     {
         if (pauseDialogue)
             return;
 
-        if (Input.GetMouseButtonDown(0))
+        //================================================
+        // FINISH CURRENT TYPING
+        //================================================
+
+        if (typingRoutine != null)
         {
-            if (typingRoutine != null)
-            {
-                StopCoroutine(typingRoutine);
-                dialogueText.text = dialogues[currentDialogue];
-                typingRoutine = null;
-            }
-            else
-            {
-                NextDialogue();
-            }
+            FinishTyping();
+        }
+        else
+        {
+            //================================================
+            // NEXT DIALOGUE
+            //================================================
+
+            NextDialogue();
+        }
+    }
+
+    //====================================================
+    // FINISH TYPING
+    //====================================================
+
+    private void FinishTyping()
+    {
+        if (typingRoutine != null)
+        {
+            StopCoroutine(typingRoutine);
+            typingRoutine = null;
+        }
+
+        if (dialogueText != null &&
+            currentDialogue >= 0 &&
+            currentDialogue < dialogues.Length &&
+            dialogues[currentDialogue] != null)
+        {
+            dialogueText.text = dialogues[currentDialogue].dialogue ?? "";
         }
     }
 
     //====================================================
     // TYPE DIALOGUE
     //====================================================
+
     IEnumerator TypeDialogue(string dialogue)
     {
-        dialogueText.text = "";
+        if (dialogueText != null)
+            dialogueText.text = "";
 
-        foreach (char c in dialogue.ToCharArray())
+        string safeDialogue = dialogue ?? "";
+
+        float safeTypingSpeed = Mathf.Max(typingSpeed, 0.001f);
+
+        int characterCount = 0;
+
+        foreach (char c in safeDialogue.ToCharArray())
         {
-            dialogueText.text += c;
-            yield return new WaitForSeconds(typingSpeed);
+            //================================================
+            // ADD CHARACTER
+            //================================================
+
+            if (dialogueText != null)
+                dialogueText.text += c;
+
+            characterCount++;
+
+            //================================================
+            // TYPEWRITER SOUND
+            //================================================
+
+            if (
+                typewriterSound != null &&
+                AudioManager.Instance != null &&
+                c != ' ' &&
+                characterCount % Mathf.Max(soundEveryCharacters, 1) == 0
+            )
+            {
+                AudioManager.Instance.PlayDialogue(
+                    typewriterSound,
+                    typewriterVolume
+                );
+            }
+
+            yield return new WaitForSeconds(safeTypingSpeed);
         }
 
         typingRoutine = null;
@@ -88,26 +197,37 @@ public class ManagerDialogue : MonoBehaviour
     //====================================================
     // NEXT DIALOGUE
     //====================================================
+
     void NextDialogue()
     {
+        // Disable the GameObject assigned to the dialogue
+        // that just finished.
+        DisableCurrentDialogueObject();
+
         currentDialogue++;
 
-        if (currentDialogue >= dialogues.Length)
+        if (dialogues == null ||
+            currentDialogue >= dialogues.Length)
         {
-            dialoguePanel.SetActive(false);
+            if (dialoguePanel != null)
+                dialoguePanel.SetActive(false);
+
             return;
         }
 
-        //------------------------------------------------
+        //================================================
         // ALCOHOL
-        //------------------------------------------------
+        //================================================
 
         if (currentDialogue == alcoholDialogueIndex)
         {
             pauseDialogue = true;
 
-            dialoguePanel.SetActive(false);
-            alcoholParent.SetActive(true);
+            if (dialoguePanel != null)
+                dialoguePanel.SetActive(false);
+
+            if (alcoholParent != null)
+                alcoholParent.SetActive(true);
 
             return;
         }
@@ -118,26 +238,140 @@ public class ManagerDialogue : MonoBehaviour
     //====================================================
     // START TYPING
     //====================================================
+
     void StartTyping()
     {
         if (typingRoutine != null)
-            StopCoroutine(typingRoutine);
-
-        if (currentDialogue < 0 || currentDialogue >= dialogues.Length)
         {
-            Debug.LogError($"Invalid dialogue index: {currentDialogue}. Array length: {dialogues.Length}");
+            StopCoroutine(typingRoutine);
+            typingRoutine = null;
+        }
+
+        if (currentDialogue < 0 ||
+            currentDialogue >= dialogues.Length)
+        {
+            Debug.LogError(
+                $"Invalid dialogue index: {currentDialogue}. " +
+                $"Array length: {dialogues.Length}"
+            );
+
             return;
         }
 
-        typingRoutine = StartCoroutine(TypeDialogue(dialogues[currentDialogue]));
+        //================================================
+        // ENABLE GAMEOBJECT FOR THIS DIALOGUE
+        //================================================
+
+        EnableCurrentDialogueObject();
+
+        string currentText = dialogues[currentDialogue] != null
+            ? dialogues[currentDialogue].dialogue ?? ""
+            : "";
+
+        //================================================
+        // AUTO RESIZE
+        //================================================
+
+        if (autoSize != null)
+        {
+            if (
+                autoSize.enabled &&
+                autoSize.gameObject.activeInHierarchy
+            )
+            {
+                autoSize.ResizeForText(currentText);
+            }
+        }
+
+        //================================================
+        // POP ANIMATION
+        //================================================
+
+        if (popAnimation != null)
+        {
+            if (
+                popAnimation.enabled &&
+                popAnimation.gameObject.activeInHierarchy
+            )
+            {
+                popAnimation.PlayPop();
+            }
+        }
+
+        //================================================
+        // TRIANGLE ANIMATION
+        //================================================
+
+        if (triangleAnimation != null)
+        {
+            if (
+                triangleAnimation.enabled &&
+                triangleAnimation.gameObject.activeInHierarchy
+            )
+            {
+                triangleAnimation.PlayAnimation();
+            }
+        }
+
+        //================================================
+        // START TYPEWRITER
+        //================================================
+
+        typingRoutine = StartCoroutine(
+            TypeDialogue(currentText)
+        );
+    }
+
+    //====================================================
+    // DIALOGUE GAMEOBJECTS
+    //====================================================
+
+    private void EnableCurrentDialogueObject()
+    {
+        if (dialogues == null ||
+            currentDialogue < 0 ||
+            currentDialogue >= dialogues.Length)
+        {
+            return;
+        }
+
+        if (dialogues[currentDialogue] == null)
+            return;
+
+        GameObject target =
+            dialogues[currentDialogue].gameObjectToEnable;
+
+        if (target != null)
+            target.SetActive(true);
+    }
+
+    private void DisableCurrentDialogueObject()
+    {
+        if (dialogues == null ||
+            currentDialogue < 0 ||
+            currentDialogue >= dialogues.Length)
+        {
+            return;
+        }
+
+        if (dialogues[currentDialogue] == null)
+            return;
+
+        GameObject target =
+            dialogues[currentDialogue].gameObjectToEnable;
+
+        if (target != null)
+            target.SetActive(false);
     }
 
     //====================================================
     // ALCOHOL COMPLETED
     //====================================================
+
     public void AlcoholCompleted()
     {
-        alcoholParent.SetActive(false);
+        if (alcoholParent != null)
+            alcoholParent.SetActive(false);
 
         if (alcoholImage != null)
             alcoholImage.SetActive(false);
@@ -148,18 +382,21 @@ public class ManagerDialogue : MonoBehaviour
     //====================================================
     // RESUME DIALOGUE
     //====================================================
+
     void ResumeDialogue()
     {
         pauseDialogue = false;
 
-        dialoguePanel.SetActive(true);
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(true);
 
         StartTyping();
     }
 
     //====================================================
-    // CONTINUE DIALOGUE (Optional - for manual resume)
+    // CONTINUE DIALOGUE
     //====================================================
+
     public void ContinueDialogue()
     {
         ResumeDialogue();

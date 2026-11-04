@@ -128,8 +128,11 @@ if (wrong != null)
         // Auto-save quiz score, mark attempted, and mark chapter as completed
         if (SaveManager.Instance != null)
         {
+            // Save quiz result
             SaveManager.Instance.SetQuizScore(chapterName, score);
             SaveManager.Instance.SetQuizAttempted(chapterName);
+
+            // Mark this chapter as completed
             SaveManager.Instance.SetChapterCompleted(chapterName);
         }
 

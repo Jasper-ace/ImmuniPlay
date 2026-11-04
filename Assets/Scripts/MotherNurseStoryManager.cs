@@ -9,12 +9,21 @@ public class MotherNurseStoryManager : MonoBehaviour
     public GameObject motherBubble;
     public TMP_Text motherDialogueText;
 
+    public DialogueBoxAutoSize motherAutoSize;
+    public DialoguePopAnimation motherPopAnimation;
+    public DialogueTriangleAnimation motherTriangleAnimation;
+
+
     [TextArea(2, 5)]
     public string[] motherDialogues;
 
     [Header("Nurse")]
     public GameObject nurseBubble;
     public TMP_Text nurseDialogueText;
+
+    public DialogueBoxAutoSize nurseAutoSize;
+    public DialoguePopAnimation nursePopAnimation;
+    public DialogueTriangleAnimation nurseTriangleAnimation;
 
     [TextArea(2, 5)]
     public string[] nurseDialogues;
@@ -103,6 +112,18 @@ public string nextSceneName;
 
             currentText = motherDialogueText;
             currentSentence = motherDialogues[motherIndex];
+            currentSentence = ProcessDialogue(currentSentence);
+
+            // Handle Dialogue Animations
+
+            if (motherAutoSize != null)
+                motherAutoSize.ResizeForText(currentSentence);
+
+            if (motherPopAnimation != null)
+                motherPopAnimation.PlayPop();
+
+            if (motherTriangleAnimation != null)
+                motherTriangleAnimation.PlayAnimation();
         }
         else
         {
@@ -117,6 +138,18 @@ public string nextSceneName;
 
             currentText = nurseDialogueText;
             currentSentence = nurseDialogues[nurseIndex];
+            currentSentence = ProcessDialogue(currentSentence);
+
+            // Handle Dialogue Animations
+
+            if (nurseAutoSize != null)
+                nurseAutoSize.ResizeForText(currentSentence);
+
+            if (nursePopAnimation != null)
+                nursePopAnimation.PlayPop();
+
+            if (nurseTriangleAnimation != null)
+                nurseTriangleAnimation.PlayAnimation();
         }
 
         if (typingCoroutine != null)
@@ -124,6 +157,34 @@ public string nextSceneName;
 
         typingCoroutine = StartCoroutine(TypeSentence());
     }
+
+   string ProcessDialogue(string text)
+{
+    Debug.Log("===== BABY NAME CHECK =====");
+
+    if (SaveManager.Instance == null)
+    {
+        Debug.LogError("SaveManager.Instance is NULL!");
+        return text;
+    }
+
+    string babyName = SaveManager.Instance.GetBabyName();
+
+    Debug.Log("Baby Name from SaveManager: [" + babyName + "]");
+    Debug.Log("Original dialogue: [" + text + "]");
+
+    if (string.IsNullOrEmpty(babyName))
+    {
+        Debug.LogError("BABY NAME IS EMPTY!");
+        return text;
+    }
+
+    string processedText = text.Replace("{babyName}", babyName);
+
+    Debug.Log("Processed dialogue: [" + processedText + "]");
+
+    return processedText;
+}
 
     IEnumerator TypeSentence()
     {

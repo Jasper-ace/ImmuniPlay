@@ -25,6 +25,7 @@ public class Alcohol : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
     // STATE
     //====================================================
     private Vector3 originalPosition;
+    private Vector2 dragOffset;
     private bool isDragging = false;
     private float rubbingTimeElapsed = 0f;
     private bool isOverTarget = false;
@@ -70,6 +71,22 @@ public class Alcohol : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
 
         isDragging = true;
         alcoholWipeCanvasGroup.alpha = 0.85f;
+
+        RectTransform parentRect =
+            alcoholWipeRect.parent as RectTransform;
+
+        if (parentRect != null)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentRect,
+                eventData.position,
+                eventData.pressEventCamera,
+                out Vector2 localPoint
+            );
+
+            dragOffset =
+                alcoholWipeRect.anchoredPosition - localPoint;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -77,10 +94,23 @@ public class Alcohol : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
         if (completed || !isDragging)
             return;
 
-        // Move the alcohol wipe with the mouse
-        alcoholWipeRect.anchoredPosition += eventData.delta;
+        RectTransform parentRect =
+            alcoholWipeRect.parent as RectTransform;
 
-        // Check if wipe is over target using world positions
+        if (parentRect != null)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentRect,
+                eventData.position,
+                eventData.pressEventCamera,
+                out Vector2 localPoint
+            );
+
+            alcoholWipeRect.anchoredPosition =
+                localPoint + dragOffset;
+        }
+
+        // Check if wipe is over target
         if (targetArea != null)
         {
             float distanceToTarget = Vector3.Distance(
@@ -88,18 +118,21 @@ public class Alcohol : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragH
                 targetArea.position
             );
 
-            isOverTarget = distanceToTarget < targetProximity;
+            isOverTarget =
+                distanceToTarget < targetProximity;
 
-            // Visual feedback - highlight target
+            // Visual feedback
             if (targetImage != null)
             {
                 if (isOverTarget)
                 {
-                    targetImage.color = new Color(1f, 0.5f, 0.5f, 0.7f); // Red tint
+                    targetImage.color =
+                        new Color(1f, 0.5f, 0.5f, 0.7f);
                 }
                 else
                 {
-                    targetImage.color = new Color(1f, 1f, 1f, 0.5f); // Default
+                    targetImage.color =
+                        new Color(1f, 1f, 1f, 0.5f);
                 }
             }
         }

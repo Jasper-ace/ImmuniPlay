@@ -8,12 +8,22 @@ public class MotherNurseDialogueManager : MonoBehaviour
     public GameObject motherBubble;
     public TMP_Text motherDialogueText;
 
+    [Tooltip("Optional. Leave empty if not used.")]
+    public DialogueBoxAutoSize motherAutoSize;
+    public DialoguePopAnimation motherPopAnimation;
+    public DialogueTriangleAnimation motherTriangleAnimation;
+
     [TextArea(2, 5)]
     public string[] motherDialogues;
 
     [Header("Nurse")]
     public GameObject nurseBubble;
     public TMP_Text nurseDialogueText;
+
+    [Tooltip("Optional. Leave empty if not used.")]
+    public DialogueBoxAutoSize nurseAutoSize;
+    public DialoguePopAnimation nursePopAnimation;
+    public DialogueTriangleAnimation nurseTriangleAnimation;
 
     [TextArea(2, 5)]
     public string[] nurseDialogues;
@@ -96,6 +106,19 @@ public class MotherNurseDialogueManager : MonoBehaviour
             motherBubble.SetActive(true);
             currentText = motherDialogueText;
             currentSentence = motherDialogues[motherIndex];
+            currentSentence = ProcessDialogue(currentSentence);
+
+            // Handle Dialogue Animations
+
+            if (motherAutoSize != null)
+                motherAutoSize.ResizeForText(currentSentence);
+
+            if (motherPopAnimation != null)
+                motherPopAnimation.PlayPop();
+
+            if (motherTriangleAnimation != null)
+                motherTriangleAnimation.PlayAnimation();
+
         }
         else
         {
@@ -109,12 +132,41 @@ public class MotherNurseDialogueManager : MonoBehaviour
             nurseBubble.SetActive(true);
             currentText = nurseDialogueText;
             currentSentence = nurseDialogues[nurseIndex];
+            currentSentence = ProcessDialogue(currentSentence);
+
+            // Handle Dialogue Animations
+
+            if (nurseAutoSize != null)
+                nurseAutoSize.ResizeForText(currentSentence);
+
+            if (nursePopAnimation != null)
+                nursePopAnimation.PlayPop();
+
+            if (nurseTriangleAnimation != null)
+                nurseTriangleAnimation.PlayAnimation();
         }
 
         if (typingCoroutine != null)
             StopCoroutine(typingCoroutine);
 
         typingCoroutine = StartCoroutine(TypeSentence());
+    }
+
+    string ProcessDialogue(string text)
+    {
+        if (SaveManager.Instance == null)
+        {
+            return text;
+        }
+
+        string babyName = SaveManager.Instance.GetBabyName();
+
+        if (string.IsNullOrEmpty(babyName))
+        {
+            babyName = "{babyName}";
+        }
+
+        return text.Replace("{babyName}", babyName);
     }
 
     IEnumerator TypeSentence()

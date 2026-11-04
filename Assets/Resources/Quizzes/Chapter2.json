@@ -1,0 +1,119 @@
+{
+  "chapterID": 2,
+  "title": "Chapter 2",
+  "subtitle": "You learned about BCG and Hepatitis B vaccines.",
+  "introCharacterPrefab": "Chapter2_Character_Intro",
+  "questions": [
+    {
+      "question": "What disease does the BCG vaccine target?",
+
+      "answers": [
+        {
+          "text": "Tuberculosis (TB)",
+          "isCorrect": true
+        },
+        {
+          "text": "Hepatitis B",
+          "isCorrect": false
+        },
+        {
+          "text": "Polio",
+          "isCorrect": false
+        },
+        {
+          "text": "Measles",
+          "isCorrect": false
+        }
+      ],
+
+      "explanation": "The BCG vaccine helps protect babies from serious forms of tuberculosis (TB)."
+    },
+    {
+      "question": "What disease does the Hepatitis B vaccine target?.",
+
+      "answers": [
+        {
+          "text": "Hepatitis B",
+          "isCorrect": true
+        },
+        {
+          "text": "Polio",
+          "isCorrect": false
+        },
+        {
+          "text": "Measles",
+          "isCorrect": false
+        },
+        {
+          "text": "Tuberculosis (TB)",
+          "isCorrect": false
+        }
+      ],
+
+      "explanation": "The Hepatitis B vaccine protects babies from hepatitis B, a disease that affects the liver."
+    }, {
+      "question": "Why are vaccines given to newborns?",
+      "answers": [
+        {
+          "text": "To protect them from serious diseases",
+          "isCorrect": true
+        },
+        {
+          "text": "To help them grow taller",
+          "isCorrect": false
+        },
+        {
+          "text": "To replace regular checkups",
+          "isCorrect": false
+        },
+        {
+          "text": "To prevent all sickness",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Vaccines help protect newborns from serious diseases early in life."
+    }, {
+      "question": "Which can be a symptom of tuberculosis (TB)?",
+      "answers": [
+        {
+          "text": "A long-lasting cough",
+          "isCorrect": true
+        },
+        {
+          "text": "Yellowing of skin and eyes",
+          "isCorrect": false
+        },
+        {
+          "text": "Rashes",
+          "isCorrect": false
+        },
+        {
+          "text": "Muscle stifness",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "TB can cause a long-lasting cough, fever, weight loss, and tiredness."
+        }, {
+      "question": "Which can be a symptom of hepatitis B?",
+      "answers": [
+        {
+          "text": "Yellow skin or eyes",
+          "isCorrect": true
+        },
+        {
+          "text": "Stiff muscles",
+          "isCorrect": false
+        },
+        {
+          "text": "Rashes",
+          "isCorrect": false
+        },
+        {
+          "text": "Whooping cough",
+          "isCorrect": false
+        }
+      ],
+      "explanation": "Hepatitis B can cause yellow skin or eyes, tiredness, and stomach pain."
+    }
+  ]
+}

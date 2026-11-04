@@ -7,6 +7,13 @@ public class DialogueFlowManager : MonoBehaviour
     [Header("Dialogue")]
     public TMP_Text dialogueText;
 
+    [Tooltip("Optional. Leave empty if not used.")]
+    public DialoguePopAnimation dialoguePopAnimation;
+
+    public DialogueBoxAutoSize dialogueBoxAutoSize;
+
+    public DialogueTriangleAnimation dialogueTriangleAnimation;
+
     [TextArea(2, 5)]
     public string[] dialogues;
 
@@ -20,19 +27,38 @@ public class DialogueFlowManager : MonoBehaviour
     public int panelAfterDialogue = 2;
 
     private int currentDialogue = 0;
+
     private bool waitingForButton = false;
     private bool panelShown = false;
 
     private bool isTyping = false;
     private Coroutine typingCoroutine;
 
+
+    // =========================================================
+    // START
+    // =========================================================
+
     void Start()
     {
         if (popupPanel != null)
             popupPanel.SetActive(false);
 
+        if (dialogues == null || dialogues.Length == 0)
+        {
+            Debug.LogWarning(
+                "[DialogueFlowManager] No dialogues assigned."
+            );
+            return;
+        }
+
         ShowCurrentDialogue();
     }
+
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
 
     void Update()
     {
@@ -42,6 +68,7 @@ public class DialogueFlowManager : MonoBehaviour
             if (waitingForButton)
                 return;
 
+
             // Finish typing instantly
             if (isTyping)
             {
@@ -49,67 +76,257 @@ public class DialogueFlowManager : MonoBehaviour
                 return;
             }
 
+
+            // Go to next dialogue
             NextDialogue();
         }
     }
 
+
+    // =========================================================
+    // SHOW CURRENT DIALOGUE
+    // =========================================================
+
     void ShowCurrentDialogue()
     {
-        if (currentDialogue >= dialogues.Length)
+        if (dialogues == null || dialogues.Length == 0)
+            return;
+
+        if (currentDialogue < 0 ||
+            currentDialogue >= dialogues.Length)
         {
             Debug.Log("Story Finished.");
             return;
         }
 
-        StartTyping(dialogues[currentDialogue]);
+
+        // -----------------------------------------------------
+        // Process baby name FIRST
+        // -----------------------------------------------------
+
+        string processedDialogue =
+            ProcessDialogue(dialogues[currentDialogue]);
+
+
+        // -----------------------------------------------------
+        // Auto Size
+        // -----------------------------------------------------
+
+        if (dialogueBoxAutoSize != null)
+        {
+            dialogueBoxAutoSize.ResizeForText(
+                processedDialogue
+            );
+        }
+
+
+        // -----------------------------------------------------
+        // Pop Animation
+        // -----------------------------------------------------
+
+        if (dialoguePopAnimation != null)
+        {
+            dialoguePopAnimation.PlayPop();
+        }
+
+
+        // -----------------------------------------------------
+        // Triangle Animation
+        // -----------------------------------------------------
+
+        if (dialogueTriangleAnimation != null)
+        {
+            dialogueTriangleAnimation.PlayAnimation();
+        }
+
+
+        // -----------------------------------------------------
+        // Typewriter
+        // -----------------------------------------------------
+
+        StartTyping(processedDialogue);
     }
+
+
+    // =========================================================
+    // BABY NAME PROCESSING
+    // =========================================================
+
+    string ProcessDialogue(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return text;
+
+
+        // If there is no placeholder,
+        // don't do anything.
+        if (!text.Contains("{babyName}"))
+            return text;
+
+
+        // Default:
+        // Keep {babyName} if no name is available.
+        string babyName = "{babyName}";
+
+
+        // Check if SaveManager exists
+        if (SaveManager.Instance != null)
+        {
+            string savedName =
+                SaveManager.Instance.GetBabyName();
+
+
+            // Use saved name if one exists
+            if (!string.IsNullOrEmpty(savedName))
+            {
+                babyName = savedName;
+            }
+        }
+        else
+        {
+            Debug.LogWarning(
+                "[DialogueFlowManager] SaveManager.Instance is NULL. " +
+                "Keeping {babyName}."
+            );
+        }
+
+
+        // Replace every {babyName} in the dialogue
+        return text.Replace(
+            "{babyName}",
+            babyName
+        );
+    }
+
+
+    // =========================================================
+    // START TYPING
+    // =========================================================
 
     void StartTyping(string text)
     {
         if (typingCoroutine != null)
+        {
             StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
 
-        typingCoroutine = StartCoroutine(TypeText(text));
+
+        typingCoroutine =
+            StartCoroutine(TypeText(text));
     }
+
+
+    // =========================================================
+    // TYPEWRITER
+    // =========================================================
 
     IEnumerator TypeText(string text)
     {
         isTyping = true;
+
+
+        if (dialogueText == null)
+        {
+            Debug.LogWarning(
+                "[DialogueFlowManager] Dialogue Text is not assigned."
+            );
+
+            isTyping = false;
+            typingCoroutine = null;
+
+            yield break;
+        }
+
+
         dialogueText.text = "";
+
 
         foreach (char letter in text)
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+
+            yield return new WaitForSeconds(
+                typingSpeed
+            );
         }
 
+
         isTyping = false;
+        typingCoroutine = null;
     }
+
+
+    // =========================================================
+    // FINISH TYPING
+    // =========================================================
 
     void FinishTyping()
     {
         if (typingCoroutine != null)
+        {
             StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
 
-        dialogueText.text = dialogues[currentDialogue];
+
+        if (dialogueText != null &&
+            dialogues != null &&
+            currentDialogue >= 0 &&
+            currentDialogue < dialogues.Length)
+        {
+            // IMPORTANT:
+            // Process the dialogue again so {babyName}
+            // is replaced even when skipping the typewriter.
+
+            string processedDialogue =
+                ProcessDialogue(
+                    dialogues[currentDialogue]
+                );
+
+            dialogueText.text = processedDialogue;
+        }
+
+
         isTyping = false;
     }
 
+
+    // =========================================================
+    // NEXT DIALOGUE
+    // =========================================================
+
     void NextDialogue()
     {
-        // Show popup after the selected dialogue
-        if (!panelShown && currentDialogue == panelAfterDialogue)
+        if (dialogues == null || dialogues.Length == 0)
+            return;
+
+
+        // -----------------------------------------------------
+        // Show popup after selected dialogue
+        // -----------------------------------------------------
+
+        if (!panelShown &&
+            currentDialogue == panelAfterDialogue)
         {
             panelShown = true;
             waitingForButton = true;
 
+
             if (popupPanel != null)
                 popupPanel.SetActive(true);
+
 
             return;
         }
 
+
+        // -----------------------------------------------------
+        // Move to next dialogue
+        // -----------------------------------------------------
+
         currentDialogue++;
+
 
         if (currentDialogue >= dialogues.Length)
         {
@@ -117,8 +334,14 @@ public class DialogueFlowManager : MonoBehaviour
             return;
         }
 
+
         ShowCurrentDialogue();
     }
+
+
+    // =========================================================
+    // CONTINUE FROM POPUP
+    // =========================================================
 
     // Assign this method to your UI Button's OnClick()
     public void ContinueFromPanel()
@@ -126,9 +349,12 @@ public class DialogueFlowManager : MonoBehaviour
         if (popupPanel != null)
             popupPanel.SetActive(false);
 
+
         waitingForButton = false;
 
+
         currentDialogue++;
+
 
         if (currentDialogue >= dialogues.Length)
         {
@@ -136,22 +362,37 @@ public class DialogueFlowManager : MonoBehaviour
             return;
         }
 
+
         ShowCurrentDialogue();
     }
+
+
+    // =========================================================
+    // GO TO SPECIFIC DIALOGUE
+    // =========================================================
 
     // Optional: Skip directly to any dialogue index
     public void GoToDialogue(int dialogueIndex)
     {
-        if (dialogueIndex < 0 || dialogueIndex >= dialogues.Length)
+        if (dialogues == null ||
+            dialogueIndex < 0 ||
+            dialogueIndex >= dialogues.Length)
         {
-            Debug.LogWarning("Dialogue index is out of range.");
+            Debug.LogWarning(
+                "[DialogueFlowManager] " +
+                "Dialogue index is out of range."
+            );
+
             return;
         }
+
 
         if (popupPanel != null)
             popupPanel.SetActive(false);
 
+
         waitingForButton = false;
+
         currentDialogue = dialogueIndex;
 
         ShowCurrentDialogue();
